@@ -11,6 +11,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { EventTabs } from "@/components/admin/event-tabs";
+import { DeleteEventButton } from "@/components/admin/delete-event-button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EventStatus } from "@/generated/prisma/client";
 import { requireAdminPage } from "@/lib/admin-page";
@@ -18,6 +19,7 @@ import { db } from "@/lib/db";
 import { formatDate } from "@/lib/format";
 
 import {
+  deleteEventAction,
   duplicateEventAction,
   setEventStatusAction,
 } from "@/app/admin/events/actions";
@@ -47,9 +49,9 @@ export default async function EventLayout({
 
   return (
     <>
-      <header className="mb-5 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+      <header className="mb-5 flex flex-col justify-between gap-5 xl:flex-row xl:items-end">
         <div className="min-w-0">
-          <div className="mb-3 flex items-center gap-2">
+          <div className="mb-3 flex flex-wrap items-center gap-2">
             <StatusBadge
               tone={
                 event.status === "PUBLISHED"
@@ -128,12 +130,18 @@ export default async function EventLayout({
               quiet
             />
           ) : (
-            <StatusAction
-              eventId={event.id}
-              status={EventStatus.DRAFT}
-              label="Restore draft"
-              icon={<RotateCcw size={15} />}
-            />
+            <>
+              <StatusAction
+                eventId={event.id}
+                status={EventStatus.DRAFT}
+                label="Restore draft"
+                icon={<RotateCcw size={15} />}
+              />
+              <DeleteEventButton
+                eventTitle={event.title}
+                action={deleteEventAction.bind(null, event.id)}
+              />
+            </>
           )}
         </div>
       </header>

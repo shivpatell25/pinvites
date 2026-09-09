@@ -262,7 +262,8 @@ export function EventForm({
                 className="w-16 px-2"
               />
               <span className="text-xs text-[var(--muted)]">
-                Used sparingly for tactile controls.
+                Used sparingly for editorial accents. Action controls stay
+                accessible automatically.
               </span>
             </div>
           </FieldShell>
@@ -278,7 +279,7 @@ export function EventForm({
           <FieldShell
             label="Default maximum party size"
             htmlFor="partySizeLimit"
-            hint="Individual households can have a more specific limit."
+            hint="This is the maximum for public RSVPs. Individual invited households can have a more specific limit."
           >
             <Input
               id="partySizeLimit"
@@ -299,7 +300,7 @@ export function EventForm({
           <CheckRow
             name="allowPlusOne"
             label="Allow +1s by default"
-            description="Household-specific settings can still override this."
+            description="Personalized households may add unnamed guests up to their limit. Public RSVPs use the event maximum above."
             defaultChecked={values.allowPlusOne}
           />
           <CheckRow

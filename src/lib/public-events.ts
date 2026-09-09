@@ -2,6 +2,7 @@ import "server-only";
 
 import type { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
+import { authorizedPartySizeLimit } from "@/lib/party-size";
 import { createPublicGrant } from "@/lib/public-grants";
 import { toDraftAnswerValue } from "@/lib/rsvp-draft";
 import { hashToken, hasValidTokenShape } from "@/lib/security/tokens";
@@ -233,7 +234,12 @@ export async function getPublicEvent(
       kind: "PUBLIC",
       token: null,
       householdName: null,
-      partySizeLimit: event.allowPlusOne ? event.partySizeLimit : 1,
+      partySizeLimit: authorizedPartySizeLimit({
+        accessKind: "PUBLIC",
+        partySizeLimit: event.partySizeLimit,
+        allowPlusOne: event.allowPlusOne,
+        namedGuestCount: 0,
+      }),
       canRespond: acceptingResponses(event),
       members: [],
       initialRsvp: null,
@@ -304,12 +310,12 @@ export async function getPersonalInvitation(
       kind,
       token: rawToken,
       householdName: household.displayName,
-      partySizeLimit: household.allowPlusOne
-        ? household.partySizeLimit
-        : Math.min(
-            household.partySizeLimit,
-            Math.max(household.guests.length, 1),
-          ),
+      partySizeLimit: authorizedPartySizeLimit({
+        accessKind: "PERSONALIZED",
+        partySizeLimit: household.partySizeLimit,
+        allowPlusOne: household.allowPlusOne,
+        namedGuestCount: household.guests.length,
+      }),
       canRespond,
       members: household.guests.map((guest) => ({
         guestId: guest.id,

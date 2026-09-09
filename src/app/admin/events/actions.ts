@@ -415,6 +415,96 @@ export async function duplicateEventAction(eventId: string): Promise<void> {
   redirect(`/admin/events/${duplicate.id}/edit?duplicated=1`);
 }
 
+export async function deleteEventAction(eventId: string): Promise<void> {
+  const admin = await requireAdmin();
+  const event = await db.event.findUnique({
+    where: { id: eventId },
+    select: { id: true, title: true, status: true },
+  });
+  if (!event) {
+    redirect(eventErrorUrl("/admin/events", "That event no longer exists."));
+  }
+  if (event.status !== EventStatus.ARCHIVED) {
+    redirect(
+      eventErrorUrl(
+        `/admin/events/${eventId}`,
+        "Archive the event before deleting it permanently.",
+      ),
+    );
+  }
+
+  const now = new Date();
+  let storageKeys: string[] = [];
+  let failure: string | null = null;
+  try {
+    storageKeys = await db.$transaction(async (transaction) => {
+      const artwork = await transaction.eventArtwork.findMany({
+        where: { eventId },
+        select: { storageKey: true },
+      });
+      const prepared = await transaction.event.updateMany({
+        where: {
+          id: eventId,
+          status: EventStatus.ARCHIVED,
+          OR: [
+            { deliveryLockedUntil: null },
+            { deliveryLockedUntil: { lte: now } },
+          ],
+        },
+        data: {
+          heroArtworkId: null,
+          deliveryLockId: null,
+          deliveryLockedUntil: null,
+        },
+      });
+      if (prepared.count !== 1) throw new Error("EVENT_NOT_DELETABLE");
+
+      await transaction.event.delete({ where: { id: eventId } });
+      await transaction.auditLog.create({
+        data: {
+          adminId: admin.id,
+          action: "event.deleted",
+          entityType: "Event",
+          entityId: eventId,
+          metadata: { title: event.title },
+        },
+      });
+      return artwork.map((item) => item.storageKey);
+    });
+  } catch (error) {
+    console.error("Unable to delete event", error);
+    failure =
+      error instanceof Error && error.message === "EVENT_NOT_DELETABLE"
+        ? "An invitation operation is in progress, or the event is no longer archived. Try again shortly."
+        : "The event could not be deleted. Nothing was changed.";
+  }
+  if (failure) {
+    redirect(eventErrorUrl(`/admin/events/${eventId}`, failure));
+  }
+
+  const root = path.resolve(getServerEnvironment().MEDIA_ROOT);
+  await Promise.all(
+    storageKeys.map(async (storageKey) => {
+      const destination = path.resolve(root, storageKey);
+      if (!destination.startsWith(`${root}${path.sep}`)) return;
+      await unlink(destination).catch((error: unknown) => {
+        const code =
+          typeof error === "object" && error && "code" in error
+            ? String(error.code)
+            : null;
+        if (code !== "ENOENT") {
+          console.error("Unable to remove deleted event artwork", error);
+        }
+      });
+    }),
+  );
+
+  revalidatePath("/admin/events");
+  revalidatePath("/admin");
+  revalidatePath("/e", "layout");
+  redirect("/admin/events?deleted=1");
+}
+
 export async function uploadArtworkAction(
   eventId: string,
   formData: FormData,

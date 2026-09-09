@@ -15,7 +15,13 @@ export const dynamic = "force-dynamic";
 export default async function EventsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; q?: string; status?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    q?: string;
+    status?: string;
+    deleted?: string;
+    error?: string;
+  }>;
 }) {
   await requireAdminPage();
   const params = await searchParams;
@@ -86,6 +92,22 @@ export default async function EventsPage({
           </Link>
         }
       />
+      {params.deleted ? (
+        <div
+          className="mb-4 rounded-[16px] bg-[color-mix(in_srgb,var(--positive)_12%,transparent)] px-4 py-3 text-sm text-[var(--positive)]"
+          role="status"
+        >
+          Event permanently deleted.
+        </div>
+      ) : null}
+      {params.error ? (
+        <div
+          className="mb-4 rounded-[16px] bg-[color-mix(in_srgb,var(--negative)_12%,transparent)] px-4 py-3 text-sm text-[var(--negative)]"
+          role="alert"
+        >
+          {params.error}
+        </div>
+      ) : null}
       <form className="mb-4 flex flex-col gap-2 rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-3 shadow-[var(--shadow-card)] sm:flex-row">
         <input
           name="q"
@@ -132,10 +154,10 @@ export default async function EventsPage({
                 </span>
               </div>
               <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-2">
                   <Link
                     href={`/admin/events/${event.id}`}
-                    className="editorial truncate text-3xl leading-tight hover:underline hover:underline-offset-4"
+                    className="editorial min-w-0 max-w-full truncate text-3xl leading-tight hover:underline hover:underline-offset-4"
                   >
                     {event.title}
                   </Link>

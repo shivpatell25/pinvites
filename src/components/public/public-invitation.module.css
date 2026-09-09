@@ -473,7 +473,7 @@
   width: 100%;
   padding: 0 24px;
   color: #fff;
-  background: var(--event-accent);
+  background: var(--accent);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
@@ -943,7 +943,7 @@
   height: 82px;
   margin: 0 auto 28px;
   color: #fff;
-  background: var(--event-accent);
+  background: var(--accent);
   border-radius: 50%;
   place-items: center;
   animation: successPop 420ms cubic-bezier(0.2, 1.4, 0.4, 1) both;

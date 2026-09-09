@@ -14,6 +14,7 @@ import {
   smtpConfigurationFromEnv,
 } from "@/lib/email";
 import { getServerEnvironment } from "@/lib/env";
+import { authorizedPartySizeLimit } from "@/lib/party-size";
 import { trustedClientIp } from "@/lib/request";
 import { isTrustedRequestOrigin } from "@/lib/security/csrf";
 import {
@@ -324,7 +325,9 @@ async function persistSubmission(
               ? normalizeEmail(payload.contactEmail)
               : null,
             partySizeLimit: event.partySizeLimit,
-            allowPlusOne: event.allowPlusOne,
+            // A public RSVP has no pre-approved named household members. Its
+            // authorization boundary is the event's explicit party-size cap.
+            allowPlusOne: true,
             guests: {
               create: { fullName: primaryName, isPrimary: true, sortOrder: 0 },
             },
@@ -390,18 +393,16 @@ async function persistSubmission(
       }
 
       if (payload.response !== "NO") {
-        const invitedLimit = household.allowPlusOne
-          ? household.partySizeLimit
-          : Math.min(
-              household.partySizeLimit,
-              Math.max(household.guests.length, 1),
-            );
-        const limit =
-          input.accessKind === "PUBLIC"
-            ? event.allowPlusOne
+        const limit = authorizedPartySizeLimit({
+          accessKind: input.accessKind === "PUBLIC" ? "PUBLIC" : "PERSONALIZED",
+          partySizeLimit:
+            input.accessKind === "PUBLIC"
               ? event.partySizeLimit
-              : 1
-            : invitedLimit;
+              : household.partySizeLimit,
+          allowPlusOne:
+            input.accessKind === "PUBLIC" ? true : household.allowPlusOne,
+          namedGuestCount: household.guests.length,
+        });
         if (payload.attendees.length < 1 || payload.attendees.length > limit) {
           throw new PublicRsvpError(
             `This invitation allows up to ${limit} ${limit === 1 ? "person" : "people"}.`,

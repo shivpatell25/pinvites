@@ -10,7 +10,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex min-h-6 items-center rounded-full px-2.5 text-[10px] font-bold uppercase tracking-[0.12em]",
+        "inline-flex min-h-6 shrink-0 items-center whitespace-nowrap rounded-full px-2.5 text-[10px] font-bold leading-none uppercase tracking-[0.12em]",
         tone === "neutral" && "bg-[var(--line)] text-[var(--muted)]",
         tone === "positive" &&
           "bg-[color-mix(in_srgb,var(--positive)_13%,transparent)] text-[var(--positive)]",

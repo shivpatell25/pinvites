@@ -239,8 +239,8 @@ export default async function AdminOverviewPage() {
                     </p>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="truncate text-sm font-semibold">
+                    <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
+                      <p className="min-w-0 flex-1 truncate text-sm font-semibold">
                         {event.title}
                       </p>
                       <StatusBadge
