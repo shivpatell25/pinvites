@@ -1,0 +1,9 @@
+.next
+AGENTS.md
+sources
+node_modules
+coverage
+src/generated
+pnpm-lock.yaml
+prisma/migrations
+public/uploads

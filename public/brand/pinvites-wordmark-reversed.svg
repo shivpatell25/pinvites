@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 248" role="img" aria-labelledby="title desc">
+  <title id="title">Pinvites</title>
+  <desc id="desc">The original Pinvites wordmark supplied by the brand owner</desc>
+  <defs>
+    <!-- Preserve the supplied letterforms exactly while removing the source image's black field. -->
+    <filter id="source-to-white" color-interpolation-filters="sRGB">
+      <feColorMatrix values="0 0 0 0 1
+                             0 0 0 0 1
+                             0 0 0 0 1
+                             .2126 .7152 .0722 0 0" />
+    </filter>
+  </defs>
+  <image href="pinvites-source.png" x="-122" y="-416" width="1080" height="1080" filter="url(#source-to-white)" />
+</svg>
