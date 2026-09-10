@@ -1,4 +1,5 @@
 import path from "node:path";
+import { mkdir } from "node:fs/promises";
 
 import sharp from "sharp";
 
@@ -18,15 +19,18 @@ await Promise.all(
   ),
 );
 
+const emailAssetDirectory = path.resolve("public/brand/hotlink-ok");
+await mkdir(emailAssetDirectory, { recursive: true });
+
 await Promise.all([
   sharp(path.resolve("public/brand/pinvites-source.png"))
     .trim()
     .resize({ width: 360, withoutEnlargement: true })
     .png({ compressionLevel: 9 })
-    .toFile(path.resolve("public/brand/pinvites-wordmark-email.png")),
+    .toFile(path.resolve(emailAssetDirectory, "pinvites-wordmark-email.png")),
   sharp(path.resolve("public/brand/pinvites-square.png"))
     .trim()
     .resize({ width: 180, height: 180, fit: "contain" })
     .png({ compressionLevel: 9 })
-    .toFile(path.resolve("public/brand/pinvites-mark-email.png")),
+    .toFile(path.resolve(emailAssetDirectory, "pinvites-mark-email.png")),
 ]);

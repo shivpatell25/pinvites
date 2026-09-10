@@ -215,11 +215,11 @@ function renderLayout(
   const actionUrl = safeWebUrl(input.actionUrl);
   const artworkUrl = input.artworkUrl ? safeWebUrl(input.artworkUrl) : null;
   const brandMarkUrl = new URL(
-    "/brand/pinvites-mark-email.png",
+    "/brand/hotlink-ok/pinvites-mark-email.png",
     actionUrl,
   ).toString();
   const brandWordmarkUrl = new URL(
-    "/brand/pinvites-wordmark-email.png",
+    "/brand/hotlink-ok/pinvites-wordmark-email.png",
     actionUrl,
   ).toString();
   const details = [input.dateLine, input.venueLine].filter(isPresent);
