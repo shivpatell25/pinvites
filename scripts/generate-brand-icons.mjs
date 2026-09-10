@@ -17,3 +17,16 @@ await Promise.all(
       .toFile(path.resolve("public/brand", filename)),
   ),
 );
+
+await Promise.all([
+  sharp(path.resolve("public/brand/pinvites-source.png"))
+    .trim()
+    .resize({ width: 360, withoutEnlargement: true })
+    .png({ compressionLevel: 9 })
+    .toFile(path.resolve("public/brand/pinvites-wordmark-email.png")),
+  sharp(path.resolve("public/brand/pinvites-square.png"))
+    .trim()
+    .resize({ width: 180, height: 180, fit: "contain" })
+    .png({ compressionLevel: 9 })
+    .toFile(path.resolve("public/brand/pinvites-mark-email.png")),
+]);

@@ -61,10 +61,10 @@ export function createInvitationEmail(
 ): RenderedEmail {
   const greeting = greetingFor(input.recipientName);
   const deadlineHtml = input.rsvpDeadlineLine
-    ? `<p style="margin:18px 0 0;color:#6f6a63;font-size:14px;line-height:1.55;">Please reply ${escapeHtml(input.rsvpDeadlineLine)}.</p>`
+    ? `<p style="margin:18px 0 0;color:#a1a1a6;font-size:14px;line-height:1.55;">Please reply ${escapeHtml(input.rsvpDeadlineLine)}.</p>`
     : "";
   const messageHtml = input.personalMessage
-    ? `<p style="margin:0 0 18px;color:#302e2b;font-size:17px;line-height:1.65;">${escapeHtml(input.personalMessage)}</p>`
+    ? `<p style="margin:0 0 18px;color:#f5f5f7;font-size:17px;line-height:1.65;">${escapeHtml(input.personalMessage)}</p>`
     : "";
   const intro = `You’re invited to ${input.eventTitle}. Open your personal invitation for the full details and to reply.`;
 
@@ -76,7 +76,7 @@ export function createInvitationEmail(
       eyebrow: "You’re invited",
       headline: input.eventTitle,
       greeting,
-      bodyHtml: `${messageHtml}<p style="margin:0;color:#302e2b;font-size:17px;line-height:1.65;">${escapeHtml(intro)}</p>${deadlineHtml}`,
+      bodyHtml: `${messageHtml}<p style="margin:0;color:#f5f5f7;font-size:17px;line-height:1.65;">${escapeHtml(intro)}</p>${deadlineHtml}`,
       bodyText: [
         input.personalMessage,
         intro,
@@ -98,7 +98,7 @@ export function createConfirmationEmail(
   const greeting = greetingFor(input.recipientName);
   const attendance = attendanceSummary(input.response, input.attendeeNames);
   const extraMessage = input.message
-    ? `<p style="margin:18px 0 0;color:#6f6a63;font-size:15px;line-height:1.6;">${escapeHtml(input.message)}</p>`
+    ? `<p style="margin:18px 0 0;color:#a1a1a6;font-size:15px;line-height:1.6;">${escapeHtml(input.message)}</p>`
     : "";
 
   return {
@@ -112,7 +112,7 @@ export function createConfirmationEmail(
           ? "We’ll see you there."
           : "Thank you for replying.",
       greeting,
-      bodyHtml: `<p style="margin:0;color:#302e2b;font-size:17px;line-height:1.65;">Your response for <strong>${escapeHtml(input.eventTitle)}</strong> is <strong>${escapeHtml(input.response)}</strong>.</p>${attendance.html}${extraMessage}`,
+      bodyHtml: `<p style="margin:0;color:#f5f5f7;font-size:17px;line-height:1.65;">Your response for <strong>${escapeHtml(input.eventTitle)}</strong> is <strong style="color:#0a84ff;">${escapeHtml(input.response)}</strong>.</p>${attendance.html}${extraMessage}`,
       bodyText: [
         `Your response for ${input.eventTitle} is ${input.response}.`,
         attendance.text,
@@ -141,7 +141,7 @@ export function createRsvpUpdateEmail(
       eyebrow: "Response updated",
       headline: "Your changes are saved.",
       greeting: greetingFor(input.recipientName),
-      bodyHtml: `<p style="margin:0;color:#302e2b;font-size:17px;line-height:1.65;">Your updated response for <strong>${escapeHtml(input.eventTitle)}</strong> is <strong>${escapeHtml(input.response)}</strong>.</p>${attendance.html}`,
+      bodyHtml: `<p style="margin:0;color:#f5f5f7;font-size:17px;line-height:1.65;">Your updated response for <strong>${escapeHtml(input.eventTitle)}</strong> is <strong style="color:#0a84ff;">${escapeHtml(input.response)}</strong>.</p>${attendance.html}`,
       bodyText: [
         `Your updated response for ${input.eventTitle} is ${input.response}.`,
         attendance.text,
@@ -159,7 +159,7 @@ export function createManagementLinkEmail(
   input: ManagementLinkEmailInput,
 ): RenderedEmail {
   const expiryHtml = input.expiresLine
-    ? `<p style="margin:18px 0 0;color:#6f6a63;font-size:14px;line-height:1.55;">${escapeHtml(input.expiresLine)}</p>`
+    ? `<p style="margin:18px 0 0;color:#a1a1a6;font-size:14px;line-height:1.55;">${escapeHtml(input.expiresLine)}</p>`
     : "";
   const expiryText = input.expiresLine ? `\n\n${input.expiresLine}` : "";
 
@@ -171,7 +171,7 @@ export function createManagementLinkEmail(
       eyebrow: "Private RSVP link",
       headline: "Your RSVP is a tap away.",
       greeting: greetingFor(input.recipientName),
-      bodyHtml: `<p style="margin:0;color:#302e2b;font-size:17px;line-height:1.65;">Use the button below to securely review or change your response for <strong>${escapeHtml(input.eventTitle)}</strong>. Email address alone can’t be used to change an RSVP.</p>${expiryHtml}`,
+      bodyHtml: `<p style="margin:0;color:#f5f5f7;font-size:17px;line-height:1.65;">Use the button below to securely review or change your response for <strong>${escapeHtml(input.eventTitle)}</strong>. Email address alone can’t be used to change an RSVP.</p>${expiryHtml}`,
       bodyText: `Use the private link below to securely review or change your response for ${input.eventTitle}. Email address alone can’t be used to change an RSVP.${expiryText}`,
       actionLabel: "Manage RSVP",
       actionUrl: input.manageUrl,
@@ -186,7 +186,7 @@ export function createReminderEmail(input: ReminderEmailInput): RenderedEmail {
     input.reminderMessage ??
     `We’d love to know whether you can join us for ${input.eventTitle}.`;
   const deadlineHtml = input.rsvpDeadlineLine
-    ? `<p style="margin:18px 0 0;color:#6f6a63;font-size:14px;line-height:1.55;">Please reply ${escapeHtml(input.rsvpDeadlineLine)}.</p>`
+    ? `<p style="margin:18px 0 0;color:#a1a1a6;font-size:14px;line-height:1.55;">Please reply ${escapeHtml(input.rsvpDeadlineLine)}.</p>`
     : "";
 
   return {
@@ -197,7 +197,7 @@ export function createReminderEmail(input: ReminderEmailInput): RenderedEmail {
       eyebrow: "A gentle reminder",
       headline: "Will you be there?",
       greeting: greetingFor(input.recipientName),
-      bodyHtml: `<p style="margin:0;color:#302e2b;font-size:17px;line-height:1.65;">${escapeHtml(reminder)}</p>${deadlineHtml}`,
+      bodyHtml: `<p style="margin:0;color:#f5f5f7;font-size:17px;line-height:1.65;">${escapeHtml(reminder)}</p>${deadlineHtml}`,
       bodyText: [reminder, deadlineSentence(input.rsvpDeadlineLine)]
         .filter(isPresent)
         .join("\n\n"),
@@ -214,11 +214,19 @@ function renderLayout(
 ): Pick<RenderedEmail, "html" | "text"> {
   const actionUrl = safeWebUrl(input.actionUrl);
   const artworkUrl = input.artworkUrl ? safeWebUrl(input.artworkUrl) : null;
+  const brandMarkUrl = new URL(
+    "/brand/pinvites-mark-email.png",
+    actionUrl,
+  ).toString();
+  const brandWordmarkUrl = new URL(
+    "/brand/pinvites-wordmark-email.png",
+    actionUrl,
+  ).toString();
   const details = [input.dateLine, input.venueLine].filter(isPresent);
   const detailsHtml = details
     .map(
       (detail) =>
-        `<div style="margin-top:5px;color:#f6f0e7;font-size:15px;line-height:1.45;letter-spacing:.01em;">${escapeHtml(detail)}</div>`,
+        `<div style="margin-top:6px;color:#f5f5f7;font-size:15px;line-height:1.45;letter-spacing:.005em;">${escapeHtml(detail)}</div>`,
     )
     .join("");
   const artworkHtml = artworkUrl
@@ -240,48 +248,63 @@ function renderLayout(
     @media only screen and (max-width: 620px) {
       .page-pad { padding: 0 !important; }
       .shell { border-radius: 0 !important; }
-      .hero { padding: 38px 26px 34px !important; }
-      .content { padding: 35px 26px 34px !important; }
-      .headline { font-size: 43px !important; line-height: .98 !important; }
+      .hero { padding: 26px 24px 36px !important; }
+      .content { padding: 34px 24px 30px !important; }
+      .headline { font-size: 44px !important; line-height: .96 !important; }
+      .brand-mark { width: 58px !important; height: 58px !important; }
+      .brand-wordmark { width: 112px !important; }
       .button-cell { display: block !important; }
       .button-link { display: block !important; text-align: center !important; }
     }
   </style>
 </head>
-<body style="margin:0;padding:0;background:#e9e5de;color:#191816;-webkit-text-size-adjust:100%;">
+<body style="margin:0;padding:0;background:#f2f2f7;color:#f5f5f7;-webkit-text-size-adjust:100%;">
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">${escapeHtml(input.preheader)}&#8199;&#65279;&#847;&nbsp;&#8199;&#65279;&#847;&nbsp;</div>
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:#e9e5de;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:#f2f2f7;">
     <tr>
-      <td class="page-pad" align="center" style="padding:30px 16px;">
-        <table role="presentation" class="shell" width="640" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:640px;background:#fffdf9;border-radius:26px;overflow:hidden;">
+      <td class="page-pad" align="center" style="padding:32px 16px;">
+        <table role="presentation" class="shell" width="640" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:640px;background:#000000;border:1px solid #d1d1d6;border-radius:30px;overflow:hidden;box-shadow:0 18px 60px rgba(0,0,0,.12);">
           ${artworkHtml}
           <tr>
-            <td class="hero" style="padding:48px 52px 44px;background:#191816;">
-              <div style="color:#c9b79c;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;">${escapeHtml(input.eyebrow)}</div>
-              <h1 class="headline" style="margin:18px 0 24px;color:#fffdf9;font-family:Didot,'Bodoni 72','Times New Roman',serif;font-size:58px;font-weight:500;letter-spacing:-.035em;line-height:.98;">${escapeHtml(input.headline)}</h1>
-              <div style="color:#c9b79c;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;">${escapeHtml(input.hostLine)}</div>
-              <div style="margin-top:18px;">${detailsHtml}</div>
-            </td>
-          </tr>
-          <tr>
-            <td class="content" style="padding:43px 52px 44px;">
-              <p style="margin:0 0 22px;color:#191816;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:700;line-height:1.5;">${escapeHtml(input.greeting)}</p>
-              <div style="font-family:Arial,Helvetica,sans-serif;">${input.bodyHtml}</div>
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:30px;">
+            <td class="hero" style="padding:32px 48px 46px;background:#000000;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
-                  <td class="button-cell" style="border-radius:13px;background:#191816;">
-                    <a class="button-link" href="${fallbackUrl}" style="display:inline-block;padding:15px 23px;color:#fffdf9;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:700;line-height:1;text-decoration:none;">${escapeHtml(input.actionLabel)}</a>
+                  <td valign="middle" style="color:#8e8e93;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;">${escapeHtml(input.eyebrow)}</td>
+                  <td align="right" valign="middle">
+                    <img class="brand-mark" src="${escapeHtml(brandMarkUrl)}" width="68" height="68" alt="Pinvites" style="display:block;width:68px;height:68px;margin-left:auto;border:0;" />
                   </td>
                 </tr>
               </table>
-              <p style="margin:20px 0 0;color:#7a756e;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.55;">${escapeHtml(input.actionHint)}</p>
-              <div style="margin-top:35px;padding-top:22px;border-top:1px solid #e7e1d8;">
-                <div style="color:#191816;font-family:Didot,'Bodoni 72','Times New Roman',serif;font-size:24px;font-style:italic;font-weight:600;letter-spacing:-.03em;">${BRAND}</div>
-              </div>
+              <h1 class="headline" style="margin:28px 0 34px;max-width:520px;color:#f5f5f7;font-family:Didot,'Bodoni 72','Times New Roman',serif;font-size:58px;font-weight:400;letter-spacing:-.045em;line-height:.96;">${escapeHtml(input.headline)}</h1>
+              <div style="height:1px;background:#38383a;font-size:0;line-height:0;">&nbsp;</div>
+              <div style="margin-top:25px;color:#a1a1a6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;">${escapeHtml(input.hostLine)}</div>
+              <div style="margin-top:15px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">${detailsHtml}</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="content" style="padding:42px 48px 36px;background:#1c1c1e;border-top:1px solid #2c2c2e;">
+              <p style="margin:0 0 22px;color:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:16px;font-weight:700;line-height:1.5;">${escapeHtml(input.greeting)}</p>
+              <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">${input.bodyHtml}</div>
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:30px;">
+                <tr>
+                  <td class="button-cell" style="border-radius:14px;background:#0a84ff;">
+                    <a class="button-link" href="${fallbackUrl}" style="display:inline-block;padding:16px 24px;color:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:15px;font-weight:700;line-height:1;text-decoration:none;">${escapeHtml(input.actionLabel)}</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:20px 0 0;color:#8e8e93;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:12px;line-height:1.55;">${escapeHtml(input.actionHint)}</p>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:38px;border-top:1px solid #38383a;">
+                <tr>
+                  <td style="padding-top:24px;">
+                    <img class="brand-wordmark" src="${escapeHtml(brandWordmarkUrl)}" width="126" alt="Pinvites" style="display:block;width:126px;max-width:126px;height:auto;border:0;" />
+                  </td>
+                  <td align="right" valign="bottom" style="padding-top:24px;color:#636366;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;">Invitations, beautifully considered.</td>
+                </tr>
+              </table>
             </td>
           </tr>
         </table>
-        <p style="margin:18px auto 0;max-width:600px;color:#77716a;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.5;">If the button doesn’t work, copy and paste this address into your browser:<br><span style="word-break:break-all;">${fallbackUrl}</span></p>
+        <p style="margin:18px auto 0;max-width:600px;color:#6e6e73;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;line-height:1.5;">If the button doesn’t work, copy and paste this address into your browser:<br><span style="word-break:break-all;">${fallbackUrl}</span></p>
       </td>
     </tr>
   </table>
@@ -307,7 +330,7 @@ function attendanceSummary(
   const label = safeNames.length === 1 ? "Attendee" : "Attendees";
   const names = safeNames.join(", ");
   return {
-    html: `<p style="margin:18px 0 0;color:#6f6a63;font-size:15px;line-height:1.6;"><strong>${label}:</strong> ${escapeHtml(names)}</p>`,
+    html: `<p style="margin:18px 0 0;color:#a1a1a6;font-size:15px;line-height:1.6;"><strong style="color:#f5f5f7;">${label}:</strong> ${escapeHtml(names)}</p>`,
     text: `${label}: ${names}`,
   };
 }
