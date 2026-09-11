@@ -263,155 +263,161 @@ export function InvitationExperience({
         Skip to invitation details
       </a>
 
-      <header className={styles.hero} aria-labelledby="event-title">
-        <Artwork event={event} onAccent={setArtworkAccent} />
-        <div className={styles.heroScrim} aria-hidden="true" />
-        <div className={styles.heroBar}>
-          {event.isPublic ? (
-            <ShareButton
-              title={event.title}
-              url={`/e/${encodeURIComponent(event.slug)}`}
-            />
-          ) : (
-            <span className={styles.heroControlSpacer} aria-hidden="true" />
-          )}
-          <span className={styles.heroMark}>
-            <PinvitesBrand compact className={styles.heroMarkImage} priority />
-          </span>
-        </div>
-        <div className={styles.heroCopy}>
-          <p className={styles.host}>Hosted by {event.hostName}</p>
-          <h1 className={styles.title} id="event-title">
-            {event.title}
-          </h1>
-          {event.subtitle ? (
-            <p className={styles.subtitle}>{event.subtitle}</p>
-          ) : null}
-          <p className={styles.heroDate}>{date.longDate}</p>
-        </div>
-      </header>
-
-      <main className={styles.main} id="invitation-details">
-        <div className={styles.content}>
-          <PinvitesBrand reversed className={styles.contentBrand} priority />
-          <section
-            className={styles.personalGreeting}
-            aria-labelledby="greeting-title"
-          >
-            <p className={styles.eyebrow}>A personal invitation</p>
-            <h2 className={styles.greeting} id="greeting-title">
-              {greeting}
-            </h2>
-            {event.description ? (
-              <p className={styles.intro}>{event.description}</p>
+      <div className={styles.scrollRegion}>
+        <header className={styles.hero} aria-labelledby="event-title">
+          <Artwork event={event} onAccent={setArtworkAccent} />
+          <div className={styles.heroScrim} aria-hidden="true" />
+          <div className={styles.heroBar}>
+            {event.isPublic ? (
+              <ShareButton
+                title={event.title}
+                url={`/e/${encodeURIComponent(event.slug)}`}
+              />
+            ) : (
+              <span className={styles.heroControlSpacer} aria-hidden="true" />
+            )}
+            <span className={styles.heroMark}>
+              <PinvitesBrand
+                compact
+                className={styles.heroMarkImage}
+                priority
+              />
+            </span>
+          </div>
+          <div className={styles.heroCopy}>
+            <p className={styles.host}>Hosted by {event.hostName}</p>
+            <h1 className={styles.title} id="event-title">
+              {event.title}
+            </h1>
+            {event.subtitle ? (
+              <p className={styles.subtitle}>{event.subtitle}</p>
             ) : null}
-          </section>
+            <p className={styles.heroDate}>{date.longDate}</p>
+          </div>
+        </header>
 
-          <dl className={styles.facts} aria-label="Event details">
-            <div className={styles.fact}>
-              <div className={styles.factDate} aria-hidden="true">
-                <span className={styles.factMonth}>{date.month}</span>
-                <span className={styles.factDay}>{date.day}</span>
-              </div>
-              <div>
-                <dt>Date &amp; time</dt>
-                <dd>
-                  <span className={styles.factTitle}>{date.longDate}</span>
-                  {date.time}
-                </dd>
-              </div>
-              <span className={styles.rowActions}>
-                <a
-                  className={`${styles.rowAction} ${styles.focusable}`}
-                  href={event.calendarUrl}
-                  aria-label="Download calendar file"
-                  title="Apple Calendar / ICS"
-                >
-                  <CalendarDays
-                    size={21}
-                    strokeWidth={1.7}
-                    aria-hidden="true"
-                  />
-                </a>
-                <a
-                  className={`${styles.rowAction} ${styles.focusable}`}
-                  href={googleCalendarUrl(event)}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Add event to Google Calendar"
-                  title="Google Calendar"
-                >
-                  <ExternalLink
-                    size={18}
-                    strokeWidth={1.7}
-                    aria-hidden="true"
-                  />
-                </a>
-              </span>
-            </div>
+        <main className={styles.main} id="invitation-details">
+          <div className={styles.content}>
+            <PinvitesBrand reversed className={styles.contentBrand} priority />
+            <section
+              className={styles.personalGreeting}
+              aria-labelledby="greeting-title"
+            >
+              <p className={styles.eyebrow}>A personal invitation</p>
+              <h2 className={styles.greeting} id="greeting-title">
+                {greeting}
+              </h2>
+              {event.description ? (
+                <p className={styles.intro}>{event.description}</p>
+              ) : null}
+            </section>
 
-            {event.venueName || event.venueAddress ? (
+            <dl className={styles.facts} aria-label="Event details">
               <div className={styles.fact}>
-                <div className={styles.factIcon} aria-hidden="true">
-                  <MapPin size={21} strokeWidth={1.7} />
+                <div className={styles.factDate} aria-hidden="true">
+                  <span className={styles.factMonth}>{date.month}</span>
+                  <span className={styles.factDay}>{date.day}</span>
                 </div>
                 <div>
-                  <dt>Location</dt>
+                  <dt>Date &amp; time</dt>
                   <dd>
-                    {event.venueName ? (
-                      <span className={styles.factTitle}>
-                        {event.venueName}
-                      </span>
-                    ) : null}
-                    {event.venueAddress}
+                    <span className={styles.factTitle}>{date.longDate}</span>
+                    {date.time}
                   </dd>
                 </div>
-                {mapUrl ? (
+                <span className={styles.rowActions}>
                   <a
                     className={`${styles.rowAction} ${styles.focusable}`}
-                    href={mapUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Open location in Maps"
+                    href={event.calendarUrl}
+                    aria-label="Download calendar file"
+                    title="Apple Calendar / ICS"
                   >
-                    <ExternalLink
-                      size={20}
+                    <CalendarDays
+                      size={21}
                       strokeWidth={1.7}
                       aria-hidden="true"
                     />
                   </a>
-                ) : null}
+                  <a
+                    className={`${styles.rowAction} ${styles.focusable}`}
+                    href={googleCalendarUrl(event)}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="Add event to Google Calendar"
+                    title="Google Calendar"
+                  >
+                    <ExternalLink
+                      size={18}
+                      strokeWidth={1.7}
+                      aria-hidden="true"
+                    />
+                  </a>
+                </span>
               </div>
+
+              {event.venueName || event.venueAddress ? (
+                <div className={styles.fact}>
+                  <div className={styles.factIcon} aria-hidden="true">
+                    <MapPin size={21} strokeWidth={1.7} />
+                  </div>
+                  <div>
+                    <dt>Location</dt>
+                    <dd>
+                      {event.venueName ? (
+                        <span className={styles.factTitle}>
+                          {event.venueName}
+                        </span>
+                      ) : null}
+                      {event.venueAddress}
+                    </dd>
+                  </div>
+                  {mapUrl ? (
+                    <a
+                      className={`${styles.rowAction} ${styles.focusable}`}
+                      href={mapUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label="Open location in Maps"
+                    >
+                      <ExternalLink
+                        size={20}
+                        strokeWidth={1.7}
+                        aria-hidden="true"
+                      />
+                    </a>
+                  ) : null}
+                </div>
+              ) : null}
+            </dl>
+
+            {event.details ? (
+              <section
+                className={styles.editorialDetails}
+                aria-labelledby="details-title"
+              >
+                <p className={styles.eyebrow}>Good to know</p>
+                <h2 className={styles.sectionTitle} id="details-title">
+                  A few details for the day.
+                </h2>
+                <p className={styles.detailsText}>{event.details}</p>
+              </section>
             ) : null}
-          </dl>
 
-          {event.details ? (
-            <section
-              className={styles.editorialDetails}
-              aria-labelledby="details-title"
-            >
-              <p className={styles.eyebrow}>Good to know</p>
-              <h2 className={styles.sectionTitle} id="details-title">
-                A few details for the day.
-              </h2>
-              <p className={styles.detailsText}>{event.details}</p>
-            </section>
-          ) : null}
+            {event.rsvpDeadline ? (
+              <p className={styles.deadline}>
+                <Clock3 size={17} strokeWidth={1.8} aria-hidden="true" />
+                Please reply by{" "}
+                {deadlineLabel(event.rsvpDeadline, event.timezone)}.
+              </p>
+            ) : null}
 
-          {event.rsvpDeadline ? (
-            <p className={styles.deadline}>
-              <Clock3 size={17} strokeWidth={1.8} aria-hidden="true" />
-              Please reply by{" "}
-              {deadlineLabel(event.rsvpDeadline, event.timezone)}.
+            <p className={styles.privacyNote}>
+              <LockKeyhole size={16} strokeWidth={1.8} aria-hidden="true" />
+              Your response is private and only visible to the host.
             </p>
-          ) : null}
-
-          <p className={styles.privacyNote}>
-            <LockKeyhole size={16} strokeWidth={1.8} aria-hidden="true" />
-            Your response is private and only visible to the host.
-          </p>
-        </div>
-      </main>
+          </div>
+        </main>
+      </div>
 
       <div className={styles.stickyBar} role="region" aria-label="RSVP actions">
         <div className={styles.stickyInner}>

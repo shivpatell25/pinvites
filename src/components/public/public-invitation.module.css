@@ -32,6 +32,10 @@
   box-sizing: border-box;
 }
 
+.scrollRegion {
+  display: contents;
+}
+
 .skipLink {
   position: fixed;
   z-index: 100;
@@ -1103,6 +1107,31 @@
 }
 
 @media (max-width: 639px) {
+  :global(html):has(.shell),
+  :global(body):has(.shell) {
+    overflow: hidden;
+    background: #09090b;
+  }
+
+  .shell {
+    display: flex;
+    height: 100svh;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    flex-direction: column;
+  }
+
+  .scrollRegion {
+    display: block;
+    min-height: 0;
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .hero {
     min-height: min(68svh, 620px);
   }
@@ -1185,7 +1214,7 @@
   .content {
     position: relative;
     z-index: 2;
-    padding: 32px 22px calc(112px + env(safe-area-inset-bottom));
+    padding: 32px 22px 54px;
   }
 
   .contentBrand {
@@ -1198,6 +1227,9 @@
   }
 
   .stickyBar {
+    position: relative;
+    z-index: 20;
+    flex: none;
     padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
     background: rgba(9, 9, 11, 0.76);
   }
