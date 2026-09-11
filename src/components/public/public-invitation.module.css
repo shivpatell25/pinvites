@@ -1162,7 +1162,9 @@
   }
 
   .hero {
+    z-index: 1;
     min-height: var(--mobile-hero-height);
+    overflow: visible;
   }
 
   .heroArtwork {
@@ -1282,8 +1284,8 @@
 
   .heroColorExtension {
     position: absolute;
-    z-index: 1;
-    top: -56px;
+    z-index: -1;
+    top: calc(100% - 56px);
     right: 0;
     left: 0;
     display: block;

@@ -307,6 +307,7 @@ export function InvitationExperience({
         <header className={styles.hero} aria-labelledby="event-title">
           <Artwork event={event} onAccent={setArtworkAccent} />
           <div className={styles.heroScrim} aria-hidden="true" />
+          <ArtworkExtension event={event} />
           <div className={styles.heroBar}>
             {event.isPublic ? (
               <ShareButton
@@ -337,7 +338,6 @@ export function InvitationExperience({
         </header>
 
         <main className={styles.main} id="invitation-details">
-          <ArtworkExtension event={event} />
           <div className={styles.content}>
             <PinvitesBrand reversed className={styles.contentBrand} priority />
             <section
