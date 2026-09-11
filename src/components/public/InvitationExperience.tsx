@@ -3,6 +3,7 @@
 import Image from "next/image";
 import {
   CalendarDays,
+  ChevronDown,
   Clock3,
   ExternalLink,
   LockKeyhole,
@@ -236,6 +237,7 @@ export function InvitationExperience({
 }: InvitationExperienceProps) {
   const [rsvpOpen, setRsvpOpen] = useState(startWithRsvpOpen);
   const [artworkAccent, setArtworkAccent] = useState<string | null>(null);
+  const [hasScrolled, setHasScrolled] = useState(false);
   const date = useMemo(() => dateParts(event), [event]);
   const existing = access.initialRsvp?.response;
   const mapUrl =
@@ -263,7 +265,12 @@ export function InvitationExperience({
         Skip to invitation details
       </a>
 
-      <div className={styles.scrollRegion}>
+      <div
+        className={styles.scrollRegion}
+        onScroll={(scrollEvent) => {
+          setHasScrolled(scrollEvent.currentTarget.scrollTop > 8);
+        }}
+      >
         <header className={styles.hero} aria-labelledby="event-title">
           <Artwork event={event} onAccent={setArtworkAccent} />
           <div className={styles.heroScrim} aria-hidden="true" />
@@ -417,6 +424,14 @@ export function InvitationExperience({
             </p>
           </div>
         </main>
+      </div>
+
+      <div
+        className={`${styles.scrollCue} ${hasScrolled ? styles.scrollCueHidden : ""}`}
+        aria-hidden="true"
+      >
+        <ChevronDown strokeWidth={1.8} />
+        <ChevronDown strokeWidth={1.8} />
       </div>
 
       <div className={styles.stickyBar} role="region" aria-label="RSVP actions">
