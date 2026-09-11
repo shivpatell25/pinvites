@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/auth";
+import { requireEventAccess } from "@/lib/admin-authorization";
 import { db } from "@/lib/db";
 import { getServerEnvironment } from "@/lib/env";
 import {
@@ -19,6 +20,7 @@ export async function POST(
   assertCsrfSafeRequest(request);
   const admin = await requireAdmin();
   const { eventId, householdId } = await params;
+  await requireEventAccess(eventId, admin);
   let lease;
   try {
     lease = await claimHouseholdDelivery(eventId, householdId);

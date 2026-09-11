@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PageHeader } from "@/components/admin/page-header";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { requireAdminPage } from "@/lib/admin-page";
+import { eventScopeFor } from "@/lib/admin-authorization";
 import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -13,13 +14,14 @@ export default async function AllGuestsPage({
 }: {
   searchParams: Promise<{ q?: string; page?: string }>;
 }) {
-  await requireAdminPage();
+  const admin = await requireAdminPage();
   const query = await searchParams;
   const search = (query.q ?? "").trim().slice(0, 160);
   const page = Math.max(1, Number.parseInt(query.page ?? "1", 10) || 1);
   const pageSize = 30;
   const where = {
     archivedAt: null,
+    event: eventScopeFor(admin),
     ...(search
       ? {
           OR: [

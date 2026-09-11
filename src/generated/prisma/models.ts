@@ -9,6 +9,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Admin'
+export type * from './models/AdminInvite'
 export type * from './models/AdminSession'
 export type * from './models/LoginAttempt'
 export type * from './models/LoginRateLimitBucket'

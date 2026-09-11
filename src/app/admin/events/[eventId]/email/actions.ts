@@ -6,6 +6,7 @@ import { z } from "zod";
 
 import type { Prisma } from "@/generated/prisma/client";
 import { requireAdmin } from "@/lib/auth";
+import { requireEventAccess } from "@/lib/admin-authorization";
 import { db } from "@/lib/db";
 import {
   createVerifiedMailer,
@@ -47,6 +48,7 @@ export async function bulkEmailAction(
   formData: FormData,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const event = await db.event.findUnique({
     where: { id: eventId },
     select: { status: true },
@@ -185,6 +187,7 @@ export async function sendOneEmailAction(
   kind: InvitationDeliveryKind,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   let mailer;
   try {
     mailer = await createVerifiedMailer();
@@ -241,6 +244,7 @@ export async function approveEmailRetryAction(
   formData: FormData,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   if (
     !identifierSchema.safeParse(eventId).success ||
     !identifierSchema.safeParse(emailLogId).success ||

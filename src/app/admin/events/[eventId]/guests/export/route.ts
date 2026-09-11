@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/auth";
+import { eventAccessWhere } from "@/lib/admin-authorization";
 import { createGuestCsvDownload } from "@/lib/csv";
 import { db } from "@/lib/db";
 
@@ -8,10 +9,10 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ eventId: string }> },
 ) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const { eventId } = await params;
-  const event = await db.event.findUnique({
-    where: { id: eventId },
+  const event = await db.event.findFirst({
+    where: eventAccessWhere(admin, eventId),
     select: { slug: true },
   });
   if (!event) return new NextResponse("Not found", { status: 404 });

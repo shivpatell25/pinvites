@@ -1,20 +1,30 @@
-import { CalendarPlus, ChevronRight } from "lucide-react";
+import { CalendarPlus, ChevronRight, KeyRound, UserRound } from "lucide-react";
 import Link from "next/link";
 
+import { AdminInviteForm } from "@/components/admin/admin-invite-form";
 import { MetricCard } from "@/components/admin/metric-card";
 import { PageHeader } from "@/components/admin/page-header";
 import { TrendChart } from "@/components/admin/trend-chart";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EventStatus } from "@/generated/prisma/client";
 import { requireAdminPage } from "@/lib/admin-page";
+import { eventScopeFor } from "@/lib/admin-authorization";
 import { db } from "@/lib/db";
 import { formatDate, formatPercent } from "@/lib/format";
+
+import {
+  resendAdminInviteAction,
+  revokeAdminInviteAction,
+  revokeAdminSessionsAction,
+  setAdminActiveAction,
+} from "@/app/admin/accounts/actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminOverviewPage() {
-  await requireAdminPage();
+  const admin = await requireAdminPage();
   const eventStatus = { in: [EventStatus.PUBLISHED, EventStatus.CLOSED] };
+  const eventScope = eventScopeFor(admin);
   const fourteenDaysAgo = new Date();
   fourteenDaysAgo.setHours(0, 0, 0, 0);
   fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 13);
@@ -36,59 +46,87 @@ export default async function AdminOverviewPage() {
       where: {
         status: "CONFIRMED",
         rsvp: {
-          household: { archivedAt: null, event: { status: eventStatus } },
+          household: {
+            archivedAt: null,
+            event: { status: eventStatus, ...eventScope },
+          },
         },
       },
     }),
     db.rsvp.count({
       where: {
         response: "YES",
-        household: { archivedAt: null, event: { status: eventStatus } },
+        household: {
+          archivedAt: null,
+          event: { status: eventStatus, ...eventScope },
+        },
       },
     }),
     db.rsvp.count({
       where: {
         response: "MAYBE",
-        household: { archivedAt: null, event: { status: eventStatus } },
+        household: {
+          archivedAt: null,
+          event: { status: eventStatus, ...eventScope },
+        },
       },
     }),
     db.rsvp.count({
       where: {
         response: "NO",
-        household: { archivedAt: null, event: { status: eventStatus } },
+        household: {
+          archivedAt: null,
+          event: { status: eventStatus, ...eventScope },
+        },
       },
     }),
     db.household.count({
-      where: { archivedAt: null, event: { status: eventStatus } },
+      where: {
+        archivedAt: null,
+        event: { status: eventStatus, ...eventScope },
+      },
     }),
     db.rsvp.count({
       where: {
-        household: { archivedAt: null, event: { status: eventStatus } },
+        household: {
+          archivedAt: null,
+          event: { status: eventStatus, ...eventScope },
+        },
       },
     }),
     db.invitation.count({
       where: {
         sentAt: { not: null },
-        household: { archivedAt: null, event: { status: eventStatus } },
+        household: {
+          archivedAt: null,
+          event: { status: eventStatus, ...eventScope },
+        },
       },
     }),
     db.invitation.count({
       where: {
         firstOpenedAt: { not: null },
-        household: { archivedAt: null, event: { status: eventStatus } },
+        household: {
+          archivedAt: null,
+          event: { status: eventStatus, ...eventScope },
+        },
       },
     }),
     db.invitation.count({
       where: {
         respondedAt: { not: null },
-        household: { archivedAt: null, event: { status: eventStatus } },
+        household: {
+          archivedAt: null,
+          event: { status: eventStatus, ...eventScope },
+        },
       },
     }),
     db.event.findMany({
-      where: { status: { not: EventStatus.ARCHIVED } },
+      where: { status: { not: EventStatus.ARCHIVED }, ...eventScope },
       orderBy: [{ startsAt: "asc" }],
       take: 6,
       include: {
+        createdBy: { select: { displayName: true } },
         _count: {
           select: { households: { where: { archivedAt: null } } },
         },
@@ -98,7 +136,10 @@ export default async function AdminOverviewPage() {
       where: {
         submittedAt: { gte: fourteenDaysAgo },
         rsvp: {
-          household: { archivedAt: null, event: { status: eventStatus } },
+          household: {
+            archivedAt: null,
+            event: { status: eventStatus, ...eventScope },
+          },
         },
       },
       select: { submittedAt: true, confirmedAttendeeCount: true },
@@ -130,6 +171,38 @@ export default async function AdminOverviewPage() {
   const responseRate = totalHouseholds > 0 ? rsvpCount / totalHouseholds : 0;
   const averageParty =
     yesHouseholds > 0 ? confirmedAttendees / yesHouseholds : 0;
+  const accountData =
+    admin.role === "OWNER"
+      ? await Promise.all([
+          db.admin.findMany({
+            orderBy: [{ role: "asc" }, { createdAt: "asc" }],
+            select: {
+              id: true,
+              displayName: true,
+              email: true,
+              role: true,
+              isActive: true,
+              lastLoginAt: true,
+              createdAt: true,
+              _count: { select: { eventsCreated: true } },
+            },
+          }),
+          db.adminInvite.findMany({
+            orderBy: { createdAt: "desc" },
+            take: 30,
+            select: {
+              id: true,
+              displayName: true,
+              email: true,
+              expiresAt: true,
+              sentAt: true,
+              acceptedAt: true,
+              revokedAt: true,
+              lastError: true,
+            },
+          }),
+        ])
+      : null;
 
   return (
     <>
@@ -258,6 +331,9 @@ export default async function AdminOverviewPage() {
                     <p className="mt-1 truncate text-xs text-[var(--muted)]">
                       {formatDate(event.startsAt, event.timezone)} ·{" "}
                       {event._count.households} households
+                      {admin.role === "OWNER"
+                        ? ` · ${event.createdBy.displayName}`
+                        : ""}
                     </p>
                   </div>
                   <ChevronRight
@@ -283,6 +359,154 @@ export default async function AdminOverviewPage() {
           </div>
         </div>
       </section>
+      {accountData ? (
+        <section className="mt-14" aria-labelledby="accounts-title">
+          <div className="mb-5">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--muted)]">
+              Private workspace access
+            </p>
+            <h2 id="accounts-title" className="editorial mt-2 text-5xl">
+              Accounts
+            </h2>
+          </div>
+          <div className="grid gap-4 xl:grid-cols-[0.86fr_1.14fr]">
+            <AdminInviteForm />
+            <div className="rounded-[24px] border border-[var(--line)] bg-[var(--surface-raised)] p-5 shadow-[var(--shadow-card)] sm:p-7">
+              <h3 className="editorial text-3xl">Administrators</h3>
+              <div className="mt-4 divide-y divide-[var(--line)]">
+                {accountData[0].map((account) => (
+                  <div
+                    key={account.id}
+                    className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center"
+                  >
+                    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[var(--accent-soft)] text-[var(--accent)]">
+                      <UserRound size={16} aria-hidden="true" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="truncate text-sm font-semibold">
+                          {account.displayName}
+                        </p>
+                        <StatusBadge
+                          tone={account.isActive ? "positive" : "negative"}
+                        >
+                          {account.role === "OWNER"
+                            ? "Owner"
+                            : account.isActive
+                              ? "Active"
+                              : "Inactive"}
+                        </StatusBadge>
+                      </div>
+                      <p className="mt-1 truncate text-xs text-[var(--muted)]">
+                        {account.email} · {account._count.eventsCreated} event
+                        {account._count.eventsCreated === 1 ? "" : "s"}
+                      </p>
+                    </div>
+                    {account.role === "ADMIN" ? (
+                      <div className="flex flex-wrap gap-2">
+                        <form
+                          action={revokeAdminSessionsAction.bind(
+                            null,
+                            account.id,
+                          )}
+                        >
+                          <button className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[var(--line)] px-3 text-[11px] font-semibold">
+                            <KeyRound size={13} /> Sign out devices
+                          </button>
+                        </form>
+                        <form
+                          action={setAdminActiveAction.bind(
+                            null,
+                            account.id,
+                            !account.isActive,
+                          )}
+                        >
+                          <button className="min-h-9 rounded-full px-3 text-[11px] font-semibold text-[var(--muted)] hover:bg-[var(--selection)]">
+                            {account.isActive ? "Deactivate" : "Reactivate"}
+                          </button>
+                        </form>
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 rounded-[24px] border border-[var(--line)] bg-[var(--surface-raised)] p-5 shadow-[var(--shadow-card)] sm:p-7">
+            <h3 className="editorial text-3xl">Invitation history</h3>
+            <div className="mt-4 divide-y divide-[var(--line)]">
+              {accountData[1].map((invite) => {
+                const status = invite.acceptedAt
+                  ? "Accepted"
+                  : invite.revokedAt
+                    ? "Revoked"
+                    : invite.expiresAt <= new Date()
+                      ? "Expired"
+                      : invite.sentAt
+                        ? "Sent"
+                        : "Created";
+                const pending = !invite.acceptedAt && !invite.revokedAt;
+                return (
+                  <div
+                    key={invite.id}
+                    className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="truncate text-sm font-semibold">
+                          {invite.displayName}
+                        </p>
+                        <StatusBadge
+                          tone={
+                            status === "Accepted"
+                              ? "positive"
+                              : status === "Revoked" || status === "Expired"
+                                ? "negative"
+                                : "warning"
+                          }
+                        >
+                          {status}
+                        </StatusBadge>
+                      </div>
+                      <p className="mt-1 truncate text-xs text-[var(--muted)]">
+                        {invite.email}
+                      </p>
+                      {invite.lastError ? (
+                        <p className="mt-1 text-xs text-[var(--negative)]">
+                          {invite.lastError}
+                        </p>
+                      ) : null}
+                    </div>
+                    {pending ? (
+                      <div className="flex gap-2">
+                        <form
+                          action={resendAdminInviteAction.bind(null, invite.id)}
+                        >
+                          <button className="min-h-9 rounded-full border border-[var(--line)] px-3 text-[11px] font-semibold">
+                            Send new link
+                          </button>
+                        </form>
+                        <form
+                          action={revokeAdminInviteAction.bind(null, invite.id)}
+                        >
+                          <button className="min-h-9 rounded-full px-3 text-[11px] font-semibold text-[var(--negative)]">
+                            Revoke
+                          </button>
+                        </form>
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })}
+              {!accountData[1].length ? (
+                <p className="py-8 text-center text-sm text-[var(--muted)]">
+                  No account invitations yet.
+                </p>
+              ) : null}
+            </div>
+          </div>
+        </section>
+      ) : null}
     </>
   );
 }

@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requireAdmin } from "@/lib/auth";
+import { requireEventAccess } from "@/lib/admin-authorization";
 import { parseGuestCsv } from "@/lib/csv";
 import { db } from "@/lib/db";
 import { normalizeEmail } from "@/lib/security/identity";
@@ -23,6 +24,7 @@ export async function addHouseholdAction(
   formData: FormData,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const event = await db.event.findUnique({
     where: { id: eventId },
     select: { id: true },
@@ -81,6 +83,7 @@ export async function updateHouseholdAction(
   formData: FormData,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const existing = await db.household.findFirst({
     where: { id: householdId, eventId },
     select: { id: true },
@@ -158,6 +161,7 @@ export async function archiveHouseholdsAction(
   formData: FormData,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const submittedIds = formData
     .getAll("householdId")
     .filter((value): value is string => typeof value === "string");
@@ -232,6 +236,7 @@ export async function restoreHouseholdAction(
   householdId: string,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   await db.$transaction(async (transaction) => {
     await transaction.household.updateMany({
       where: { id: householdId, eventId, archivedAt: { not: null } },
@@ -259,6 +264,7 @@ export async function importGuestsAction(
   formData: FormData,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const upload = formData.get("csv");
   if (!(upload instanceof File) || upload.size === 0)
     redirect(guestErrorUrl(eventId, "Choose a CSV file.", "/import"));

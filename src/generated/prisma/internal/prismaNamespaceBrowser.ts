@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Admin: 'Admin',
+  AdminInvite: 'AdminInvite',
   AdminSession: 'AdminSession',
   LoginAttempt: 'LoginAttempt',
   LoginRateLimitBucket: 'LoginRateLimitBucket',
@@ -108,6 +109,28 @@ export const AdminScalarFieldEnum = {
 } as const
 
 export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
+
+
+export const AdminInviteScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  normalizedEmail: 'normalizedEmail',
+  displayName: 'displayName',
+  role: 'role',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  sentAt: 'sentAt',
+  acceptedAt: 'acceptedAt',
+  revokedAt: 'revokedAt',
+  deliveryVersion: 'deliveryVersion',
+  lastError: 'lastError',
+  invitedById: 'invitedById',
+  acceptedAdminId: 'acceptedAdminId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdminInviteScalarFieldEnum = (typeof AdminInviteScalarFieldEnum)[keyof typeof AdminInviteScalarFieldEnum]
 
 
 export const AdminSessionScalarFieldEnum = {

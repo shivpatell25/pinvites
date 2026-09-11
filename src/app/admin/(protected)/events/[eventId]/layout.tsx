@@ -14,7 +14,7 @@ import { EventTabs } from "@/components/admin/event-tabs";
 import { DeleteEventButton } from "@/components/admin/delete-event-button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EventStatus } from "@/generated/prisma/client";
-import { requireAdminPage } from "@/lib/admin-page";
+import { requireEventPage } from "@/lib/admin-page";
 import { db } from "@/lib/db";
 import { formatDate } from "@/lib/format";
 
@@ -31,8 +31,8 @@ export default async function EventLayout({
   children: React.ReactNode;
   params: Promise<{ eventId: string }>;
 }) {
-  await requireAdminPage();
   const { eventId } = await params;
+  await requireEventPage(eventId);
   const event = await db.event.findUnique({
     where: { id: eventId },
     select: {

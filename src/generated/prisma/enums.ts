@@ -135,7 +135,8 @@ export const EmailType = {
   REMINDER: 'REMINDER',
   CONFIRMATION: 'CONFIRMATION',
   RSVP_UPDATE: 'RSVP_UPDATE',
-  MANAGEMENT_LINK: 'MANAGEMENT_LINK'
+  MANAGEMENT_LINK: 'MANAGEMENT_LINK',
+  ADMIN_INVITE: 'ADMIN_INVITE'
 } as const
 
 export type EmailType = (typeof EmailType)[keyof typeof EmailType]

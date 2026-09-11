@@ -469,10 +469,6 @@ export type AdminSessionUncheckedUpdateManyWithoutAdminNestedInput = {
   deleteMany?: Prisma.AdminSessionScalarWhereInput | Prisma.AdminSessionScalarWhereInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type AdminSessionCreateWithoutAdminInput = {
   id?: string
   tokenHash: string

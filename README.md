@@ -32,7 +32,7 @@ You need a Linux host with Docker Engine and Docker Compose v2, a DNS name, and 
    docker compose ps
    ```
 
-   The app waits for PostgreSQL, applies committed Prisma migrations, and then starts. The database has no host port. The web service binds to `127.0.0.1:3000` by default so it is reachable by a same-host proxy but not directly from the internet.
+   The app waits for PostgreSQL, applies committed Prisma migrations, and then starts. The database has no host port. The web service publishes `${APP_PORT:-3000}` on the Docker host; restrict that port with the host firewall when Cloudflare Tunnel or another reverse proxy is the only intended entry point.
 
 4. Create the first administrator over an interactive terminal:
 
@@ -40,7 +40,7 @@ You need a Linux host with Docker Engine and Docker Compose v2, a DNS name, and 
    docker compose run --rm app pnpm admin:create
    ```
 
-   The first administrator becomes an owner. There are no default credentials and no public registration. To intentionally rotate an existing administrator’s password and revoke their sessions:
+   The first administrator becomes the owner. There are no default credentials and no public registration. After signing in, the owner can invite additional administrators from the **Accounts** section of the main dashboard. To intentionally rotate an existing administrator’s password and revoke their sessions:
 
    ```sh
    docker compose run --rm app pnpm admin:create -- --update
@@ -50,9 +50,17 @@ You need a Linux host with Docker Engine and Docker Compose v2, a DNS name, and 
 
 5. Visit `/api/health` through the local port or proxy. A healthy response confirms the process and database connection without exposing secrets or record counts.
 
+## Administrator accounts and event ownership
+
+Pinvites is invite-only. The first account created by `pnpm admin:create` is the owner. Only the owner sees account administration on the main dashboard and can create, resend, or revoke a seven-day account invitation; deactivate or reactivate an administrator; and sign that administrator out on every device.
+
+An invitation is emailed through the configured SMTP transport. Whether delivery succeeds or fails, its one-time setup URL is also shown to the owner immediately so it can be copied and delivered through another trusted channel. Only a hash of the bearer token is stored. Accepting the invitation creates the account, consumes the token atomically, and starts a normal secure administrator session.
+
+Invited administrators can create and manage only their own events, guests, RSVPs, artwork, email sends, exports, and QR codes. Direct URLs and server mutations enforce the same ownership boundary. The owner can view and manage every event. Deactivating an account immediately revokes its active sessions but preserves its events and audit history.
+
 ## Reverse proxies and HTTPS
 
-TLS must terminate at Cloudflare Tunnel, Nginx/Nginx Proxy Manager, Caddy, or Traefik. The proxy should preserve the original host and send `X-Forwarded-Proto` and `X-Forwarded-For`. Set `TRUST_PROXY_HEADERS=true` only when clients cannot bypass that trusted proxy; the default Compose binding to loopback provides that boundary on a single-host deployment.
+TLS must terminate at Cloudflare Tunnel, Nginx/Nginx Proxy Manager, Caddy, or Traefik. The proxy should preserve the original host and send `X-Forwarded-Proto` and `X-Forwarded-For`. Set `TRUST_PROXY_HEADERS=true` only when clients cannot bypass that trusted proxy. When the published app port is reachable beyond the host, use the host firewall to restrict it to trusted proxy sources.
 
 Public RSVP throttling always starts with a connection-level database bucket before it reads any client-supplied event or token value. If trusted client-IP headers are disabled or absent, Pinvites intentionally falls back to one shared, fail-safe bucket; that prevents spoofing but can throttle unrelated guests together. A production proxy should therefore overwrite the client-IP headers exactly as shown below and enable `TRUST_PROXY_HEADERS`.
 
@@ -87,9 +95,9 @@ location ^~ /i/ {
 
 Pinvites also sends `Referrer-Policy: no-referrer` so same-origin asset and navigation requests do not repeat private URLs in Referer headers. Confirm that CDN, WAF, tunnel, APM, and error-reporting products do not retain full `/i/` request targets before sending invitations.
 
-Match `client_max_body_size` to `MAX_UPLOAD_MB` with a little allowance for multipart overhead. In Nginx Proxy Manager, enable WebSocket support, preserve these forwarding headers, and request a certificate with “Force SSL.” In Caddy, `reverse_proxy 127.0.0.1:3000` supplies the standard forwarding headers automatically. A Cloudflare Tunnel can target `http://localhost:3000`; keep `BASE_URL` set to the public `https://` hostname, not the tunnel target.
+Match `client_max_body_size` to `MAX_UPLOAD_MB` with a little allowance for multipart overhead. In Nginx Proxy Manager, enable WebSocket support, preserve these forwarding headers, and request a certificate with “Force SSL.” In Caddy, `reverse_proxy 127.0.0.1:3000` supplies the standard forwarding headers automatically. A Cloudflare Tunnel installed on the host can target `http://localhost:3000`; keep `BASE_URL` set to the public `https://` hostname, not the tunnel target.
 
-The loopback port is directly reachable only by a proxy installed on the Docker host. For a proxy or Cloudflare Tunnel running in another container, attach that container to `pinvites_edge` after this stack starts (`docker network connect pinvites_edge PROXY_CONTAINER`) and use `http://app:3000` as the upstream. Do not publish the database network or attach the proxy to it.
+For a proxy or Cloudflare Tunnel running in another container, attach that container to `pinvites_edge` after this stack starts (`docker network connect pinvites_edge PROXY_CONTAINER`) and use `http://app:3000` as the upstream. Do not publish the database network or attach the proxy to it.
 
 Secure cookies are derived from the HTTPS `BASE_URL`. Changing the public hostname requires updating `BASE_URL`, `TRUSTED_ORIGINS` when used, proxy routing, and any already-sent links that embed the old origin.
 

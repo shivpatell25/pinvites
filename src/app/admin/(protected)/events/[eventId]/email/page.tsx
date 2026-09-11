@@ -9,7 +9,7 @@ import { notFound } from "next/navigation";
 
 import type { Prisma } from "@/generated/prisma/client";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { requireAdminPage } from "@/lib/admin-page";
+import { requireEventPage } from "@/lib/admin-page";
 import { db } from "@/lib/db";
 import { smtpConfigurationFromEnv } from "@/lib/email";
 
@@ -48,8 +48,8 @@ export default async function EmailPage({
     released?: string;
   }>;
 }) {
-  await requireAdminPage();
   const [{ eventId }, query] = await Promise.all([params, searchParams]);
+  await requireEventPage(eventId);
   const smtp = smtpConfigurationFromEnv();
   const event = await db.event.findUnique({
     where: { id: eventId },

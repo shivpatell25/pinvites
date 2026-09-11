@@ -28,7 +28,9 @@ export async function GET(
   const storageKey = storageSegments.join("/");
   const artwork = await db.eventArtwork.findFirst({
     where: { id: artworkId, storageKey },
-    include: { event: { select: { status: true, isPublic: true } } },
+    include: {
+      event: { select: { status: true, isPublic: true, createdById: true } },
+    },
   });
   if (!artwork) return new NextResponse("Not found", { status: 404 });
   const published =
@@ -38,7 +40,11 @@ export async function GET(
   const authorizedPublic =
     published &&
     (artwork.event.isPublic || verifyPublicGrant(grant, "artwork", subject));
-  if (!authorizedPublic && !(await getCurrentAdmin()))
+  const admin = authorizedPublic ? null : await getCurrentAdmin();
+  const authorizedAdmin =
+    admin &&
+    (admin.role === "OWNER" || artwork.event.createdById === admin.id);
+  if (!authorizedPublic && !authorizedAdmin)
     return new NextResponse("Not found", { status: 404 });
   const root = path.resolve(getServerEnvironment().MEDIA_ROOT);
   const target = path.resolve(root, storageKey);

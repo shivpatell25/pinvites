@@ -42,6 +42,13 @@ export interface ReminderEmailInput extends BaseTemplateInput {
   reminderMessage?: string;
 }
 
+export interface AdminInviteEmailInput {
+  recipientName: string;
+  inviterName: string;
+  setupUrl: string;
+  expiresLine: string;
+}
+
 interface LayoutInput extends EventEmailDetails {
   preheader: string;
   eyebrow: string;
@@ -205,6 +212,31 @@ export function createReminderEmail(input: ReminderEmailInput): RenderedEmail {
       actionUrl: input.invitationUrl,
       actionHint:
         "This link is personal to your invitation. Please don’t forward it.",
+    }),
+  };
+}
+
+export function createAdminInviteEmail(
+  input: AdminInviteEmailInput,
+): RenderedEmail {
+  return {
+    subject: safeSubject(`${input.inviterName} invited you to Pinvites`),
+    ...renderLayout({
+      eventTitle: BRAND,
+      hostLine: `Invited by ${input.inviterName}`,
+      dateLine: input.expiresLine,
+      preheader: "Create your private Pinvites administrator account",
+      eyebrow: "Private account invitation",
+      headline: "Your events deserve a beautiful beginning.",
+      greeting: greetingFor(input.recipientName),
+      bodyHtml:
+        '<p style="margin:0;color:#f5f5f7;font-size:17px;line-height:1.65;">You’ve been invited to create a Pinvites account and manage your own invitations, guests, and RSVPs.</p>',
+      bodyText:
+        "You’ve been invited to create a Pinvites account and manage your own invitations, guests, and RSVPs.",
+      actionLabel: "Create my account",
+      actionUrl: input.setupUrl,
+      actionHint:
+        "This one-time setup link is private. Please don’t forward or share it.",
     }),
   };
 }

@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/admin/page-header";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EventStatus } from "@/generated/prisma/client";
 import { requireAdminPage } from "@/lib/admin-page";
+import { eventScopeFor } from "@/lib/admin-authorization";
 import { db } from "@/lib/db";
 import { formatDate } from "@/lib/format";
 
@@ -23,7 +24,7 @@ export default async function EventsPage({
     error?: string;
   }>;
 }) {
-  await requireAdminPage();
+  const admin = await requireAdminPage();
   const params = await searchParams;
   const page = Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1);
   const pageSize = 20;
@@ -34,6 +35,7 @@ export default async function EventsPage({
     ? (params.status as EventStatus)
     : undefined;
   const where = {
+    ...eventScopeFor(admin),
     ...(status ? { status } : {}),
     ...(query
       ? {
@@ -51,6 +53,7 @@ export default async function EventsPage({
       skip: (page - 1) * pageSize,
       take: pageSize,
       include: {
+        createdBy: { select: { displayName: true } },
         _count: {
           select: { households: { where: { archivedAt: null } } },
         },
@@ -177,6 +180,9 @@ export default async function EventsPage({
                   {formatDate(event.startsAt, event.timezone)} ·{" "}
                   {event._count.households} households ·{" "}
                   {attendeeCounts.get(event.id) ?? 0} confirmed attendees
+                  {admin.role === "OWNER"
+                    ? ` · ${event.createdBy.displayName}`
+                    : ""}
                 </p>
               </div>
               <div className="flex gap-2">

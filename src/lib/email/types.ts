@@ -4,6 +4,7 @@ export const EMAIL_KINDS = [
   "CONFIRMATION",
   "RSVP_UPDATE",
   "MANAGEMENT_LINK",
+  "ADMIN_INVITE",
 ] as const;
 
 export type EmailKind = (typeof EMAIL_KINDS)[number];

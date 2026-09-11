@@ -4,21 +4,24 @@ import Link from "next/link";
 import { PageHeader } from "@/components/admin/page-header";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { requireAdminPage } from "@/lib/admin-page";
+import { eventScopeFor } from "@/lib/admin-authorization";
 import { db } from "@/lib/db";
 import { smtpConfigurationFromEnv } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
 export default async function AllEmailPage() {
-  await requireAdminPage();
+  const admin = await requireAdminPage();
+  const eventScope = eventScopeFor(admin);
   const [logs, events] = await Promise.all([
     db.emailLog.findMany({
+      where: { event: eventScope },
       orderBy: { createdAt: "desc" },
       take: 100,
       include: { event: { select: { id: true, title: true } } },
     }),
     db.event.findMany({
-      where: { status: { not: "ARCHIVED" } },
+      where: { status: { not: "ARCHIVED" }, ...eventScope },
       orderBy: { startsAt: "desc" },
       take: 20,
       select: { id: true, title: true },

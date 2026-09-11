@@ -6,6 +6,7 @@ import { z } from "zod";
 
 import { QuestionConditionOperator } from "@/generated/prisma/client";
 import { requireAdmin } from "@/lib/auth";
+import { requireEventAccess } from "@/lib/admin-authorization";
 import { db } from "@/lib/db";
 import {
   checkboxValue,
@@ -23,6 +24,7 @@ export async function addMealOptionAction(
   formData: FormData,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const parsed = mealOptionSchema.safeParse(formDataObject(formData));
   if (!parsed.success)
     redirect(
@@ -53,6 +55,7 @@ export async function toggleMealOptionAction(
   active: boolean,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   await db.mealOption.updateMany({
     where: { id: mealId, eventId },
     data: { isActive: active },
@@ -75,6 +78,7 @@ export async function addQuestionAction(
   formData: FormData,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const parsed = questionInputSchema.safeParse({
     ...formDataObject(formData),
     isRequired: checkboxValue(formData, "isRequired"),
@@ -129,6 +133,7 @@ export async function toggleQuestionAction(
   active: boolean,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   await db.question.updateMany({
     where: { id: questionId, eventId },
     data: { isActive: active },
@@ -168,6 +173,7 @@ export async function addQuestionConditionAction(
   formData: FormData,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const parsed = conditionSchema.safeParse(formDataObject(formData));
   if (!parsed.success)
     redirect(
@@ -220,6 +226,7 @@ export async function deleteQuestionConditionAction(
   conditionId: string,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const result = await db.questionCondition.deleteMany({
     where: { id: conditionId, question: { eventId } },
   });

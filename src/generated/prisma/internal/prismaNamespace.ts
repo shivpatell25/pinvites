@@ -398,6 +398,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Admin: 'Admin',
+  AdminInvite: 'AdminInvite',
   AdminSession: 'AdminSession',
   LoginAttempt: 'LoginAttempt',
   LoginRateLimitBucket: 'LoginRateLimitBucket',
@@ -436,7 +437,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "admin" | "adminSession" | "loginAttempt" | "loginRateLimitBucket" | "publicRsvpRateLimitBucket" | "event" | "eventArtwork" | "household" | "guest" | "invitation" | "invitationToken" | "rsvp" | "rsvpSubmission" | "attendee" | "mealOption" | "question" | "questionOption" | "questionCondition" | "rsvpAnswer" | "rsvpAnswerOption" | "emailLog" | "emailDeliveryAttempt" | "analyticsEvent" | "auditLog"
+    modelProps: "admin" | "adminInvite" | "adminSession" | "loginAttempt" | "loginRateLimitBucket" | "publicRsvpRateLimitBucket" | "event" | "eventArtwork" | "household" | "guest" | "invitation" | "invitationToken" | "rsvp" | "rsvpSubmission" | "attendee" | "mealOption" | "question" | "questionOption" | "questionCondition" | "rsvpAnswer" | "rsvpAnswerOption" | "emailLog" | "emailDeliveryAttempt" | "analyticsEvent" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -511,6 +512,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AdminCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AdminCountAggregateOutputType> | number
+        }
+      }
+    }
+    AdminInvite: {
+      payload: Prisma.$AdminInvitePayload<ExtArgs>
+      fields: Prisma.AdminInviteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdminInviteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdminInviteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitePayload>
+        }
+        findFirst: {
+          args: Prisma.AdminInviteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdminInviteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitePayload>
+        }
+        findMany: {
+          args: Prisma.AdminInviteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitePayload>[]
+        }
+        create: {
+          args: Prisma.AdminInviteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitePayload>
+        }
+        createMany: {
+          args: Prisma.AdminInviteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AdminInviteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitePayload>[]
+        }
+        delete: {
+          args: Prisma.AdminInviteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitePayload>
+        }
+        update: {
+          args: Prisma.AdminInviteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitePayload>
+        }
+        deleteMany: {
+          args: Prisma.AdminInviteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdminInviteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AdminInviteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitePayload>[]
+        }
+        upsert: {
+          args: Prisma.AdminInviteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitePayload>
+        }
+        aggregate: {
+          args: Prisma.AdminInviteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdminInvite>
+        }
+        groupBy: {
+          args: Prisma.AdminInviteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminInviteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdminInviteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminInviteCountAggregateOutputType> | number
         }
       }
     }
@@ -2272,6 +2347,28 @@ export const AdminScalarFieldEnum = {
 export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
 
 
+export const AdminInviteScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  normalizedEmail: 'normalizedEmail',
+  displayName: 'displayName',
+  role: 'role',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  sentAt: 'sentAt',
+  acceptedAt: 'acceptedAt',
+  revokedAt: 'revokedAt',
+  deliveryVersion: 'deliveryVersion',
+  lastError: 'lastError',
+  invitedById: 'invitedById',
+  acceptedAdminId: 'acceptedAdminId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdminInviteScalarFieldEnum = (typeof AdminInviteScalarFieldEnum)[keyof typeof AdminInviteScalarFieldEnum]
+
+
 export const AdminSessionScalarFieldEnum = {
   id: 'id',
   adminId: 'adminId',
@@ -2771,6 +2868,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
  * Reference to a field of type 'LoginAttemptOutcome'
  */
 export type EnumLoginAttemptOutcomeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LoginAttemptOutcome'>
@@ -2795,20 +2906,6 @@ export type EnumRateLimitScopeFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'RateLimitScope[]'
  */
 export type ListEnumRateLimitScopeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RateLimitScope[]'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -3201,6 +3298,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   admin?: Prisma.AdminOmit
+  adminInvite?: Prisma.AdminInviteOmit
   adminSession?: Prisma.AdminSessionOmit
   loginAttempt?: Prisma.LoginAttemptOmit
   loginRateLimitBucket?: Prisma.LoginRateLimitBucketOmit

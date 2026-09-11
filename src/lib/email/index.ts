@@ -5,6 +5,7 @@ export {
 } from "./mailer";
 export { PrismaMailDeliveryLedger } from "./prisma-ledger";
 export {
+  createAdminInviteEmail,
   createConfirmationEmail,
   createInvitationEmail,
   createManagementLinkEmail,
@@ -12,6 +13,7 @@ export {
   createRsvpUpdateEmail,
 } from "./templates";
 export type {
+  AdminInviteEmailInput,
   ConfirmationEmailInput,
   EventEmailDetails,
   InvitationEmailInput,

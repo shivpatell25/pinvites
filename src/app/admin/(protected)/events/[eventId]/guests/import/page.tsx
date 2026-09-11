@@ -1,7 +1,7 @@
 import { Download } from "lucide-react";
 
 import { CsvImporter } from "@/components/admin/csv-importer";
-import { requireAdminPage } from "@/lib/admin-page";
+import { requireEventPage } from "@/lib/admin-page";
 import { importGuestsAction } from "@/app/admin/events/[eventId]/guests/actions";
 
 export default async function ImportGuestsPage({
@@ -11,8 +11,8 @@ export default async function ImportGuestsPage({
   params: Promise<{ eventId: string }>;
   searchParams: Promise<{ error?: string }>;
 }) {
-  await requireAdminPage();
   const [{ eventId }, query] = await Promise.all([params, searchParams]);
+  await requireEventPage(eventId);
   return (
     <div className="max-w-5xl">
       <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { HouseholdForm } from "@/components/admin/household-form";
 import { updateHouseholdAction } from "@/app/admin/events/[eventId]/guests/actions";
-import { requireAdminPage } from "@/lib/admin-page";
+import { requireEventPage } from "@/lib/admin-page";
 import { db } from "@/lib/db";
 
 export default async function EditHouseholdPage({
@@ -12,11 +12,11 @@ export default async function EditHouseholdPage({
   params: Promise<{ eventId: string; householdId: string }>;
   searchParams: Promise<{ error?: string }>;
 }) {
-  await requireAdminPage();
   const [{ eventId, householdId }, query] = await Promise.all([
     params,
     searchParams,
   ]);
+  await requireEventPage(eventId);
   const household = await db.household.findFirst({
     where: { id: householdId, eventId },
     include: { guests: { orderBy: { sortOrder: "asc" } } },

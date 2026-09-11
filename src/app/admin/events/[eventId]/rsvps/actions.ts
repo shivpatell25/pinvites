@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requireAdmin } from "@/lib/auth";
+import { requireEventAccess } from "@/lib/admin-authorization";
 import { db } from "@/lib/db";
 import { normalizeEmail } from "@/lib/security/identity";
 
@@ -44,6 +45,7 @@ export async function updateRsvpAsAdminAction(
   formData: FormData,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const raw = formData.get("payload");
   let json: unknown;
   try {

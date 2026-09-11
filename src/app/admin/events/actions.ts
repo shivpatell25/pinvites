@@ -11,6 +11,7 @@ import sharp, { type Metadata } from "sharp";
 
 import { EventStatus, Prisma, QuestionType } from "@/generated/prisma/client";
 import { requireAdmin } from "@/lib/auth";
+import { requireEventAccess } from "@/lib/admin-authorization";
 import { db } from "@/lib/db";
 import { getServerEnvironment } from "@/lib/env";
 import {
@@ -141,6 +142,7 @@ export async function updateEventAction(
   formData: FormData,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   let parsed: ReturnType<typeof eventInputSchema.safeParse>;
   try {
     parsed = parseEventForm(formData);
@@ -196,6 +198,7 @@ export async function setEventStatusAction(
   status: EventStatus,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const event = await db.event.findUnique({
     where: { id: eventId },
     select: { status: true, heroArtworkId: true },
@@ -284,6 +287,7 @@ async function availableDuplicateSlug(baseSlug: string) {
 
 export async function duplicateEventAction(eventId: string): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const source = await db.event.findUnique({
     where: { id: eventId },
     include: {
@@ -417,6 +421,7 @@ export async function duplicateEventAction(eventId: string): Promise<void> {
 
 export async function deleteEventAction(eventId: string): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const event = await db.event.findUnique({
     where: { id: eventId },
     select: { id: true, title: true, status: true },
@@ -510,6 +515,7 @@ export async function uploadArtworkAction(
   formData: FormData,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const event = await db.event.findUnique({
     where: { id: eventId },
     select: { id: true },
@@ -648,6 +654,7 @@ export async function deleteArtworkAction(
   artworkId: string,
 ): Promise<void> {
   const admin = await requireAdmin();
+  await requireEventAccess(eventId, admin);
   const artwork = await db.eventArtwork.findFirst({
     where: { id: artworkId, eventId },
   });

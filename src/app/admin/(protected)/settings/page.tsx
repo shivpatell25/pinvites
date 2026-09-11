@@ -24,7 +24,9 @@ export default async function SettingsPage({
           Security, deployment origin, and delivery readiness.
         </p>
       </div>
-      <div className="grid gap-12 xl:grid-cols-2">
+      <div
+        className={`grid gap-12 ${admin.role === "OWNER" ? "xl:grid-cols-2" : "max-w-2xl"}`}
+      >
         <section>
           <h2 className="flex items-center gap-2 text-sm font-bold">
             <LockKeyhole size={16} /> Administrator
@@ -86,42 +88,44 @@ export default async function SettingsPage({
             </SubmitButton>
           </form>
         </section>
-        <section>
-          <h2 className="flex items-center gap-2 text-sm font-bold">
-            <Server size={16} /> Production readiness
-          </h2>
-          <dl className="mt-5 divide-y divide-[var(--line)] border-y border-[var(--line)]">
-            <SettingRow
-              label="Public origin"
-              value={environment.BASE_URL}
-              ready={environment.BASE_URL.startsWith("https://")}
-            />
-            <SettingRow
-              label="Secure cookies"
-              value={
-                environment.BASE_URL.startsWith("https://")
-                  ? "Enabled"
-                  : "Development mode"
-              }
-              ready={environment.BASE_URL.startsWith("https://")}
-            />
-            <SettingRow
-              label="Trusted proxy headers"
-              value={environment.TRUST_PROXY_HEADERS ? "Enabled" : "Disabled"}
-              ready
-            />
-            <SettingRow
-              label="SMTP"
-              value={smtp.configured ? "Configured" : smtp.reason}
-              ready={smtp.configured}
-            />
-            <SettingRow
-              label="Media storage"
-              value={environment.MEDIA_ROOT}
-              ready
-            />
-          </dl>
-        </section>
+        {admin.role === "OWNER" ? (
+          <section>
+            <h2 className="flex items-center gap-2 text-sm font-bold">
+              <Server size={16} /> Production readiness
+            </h2>
+            <dl className="mt-5 divide-y divide-[var(--line)] border-y border-[var(--line)]">
+              <SettingRow
+                label="Public origin"
+                value={environment.BASE_URL}
+                ready={environment.BASE_URL.startsWith("https://")}
+              />
+              <SettingRow
+                label="Secure cookies"
+                value={
+                  environment.BASE_URL.startsWith("https://")
+                    ? "Enabled"
+                    : "Development mode"
+                }
+                ready={environment.BASE_URL.startsWith("https://")}
+              />
+              <SettingRow
+                label="Trusted proxy headers"
+                value={environment.TRUST_PROXY_HEADERS ? "Enabled" : "Disabled"}
+                ready
+              />
+              <SettingRow
+                label="SMTP"
+                value={smtp.configured ? "Configured" : smtp.reason}
+                ready={smtp.configured}
+              />
+              <SettingRow
+                label="Media storage"
+                value={environment.MEDIA_ROOT}
+                ready
+              />
+            </dl>
+          </section>
+        ) : null}
       </div>
     </>
   );

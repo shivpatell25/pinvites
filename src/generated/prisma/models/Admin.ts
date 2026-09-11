@@ -237,6 +237,8 @@ export type AdminWhereInput = {
   artworkUploads?: Prisma.EventArtworkListRelationFilter
   rsvpSubmissions?: Prisma.RsvpSubmissionListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  invitesSent?: Prisma.AdminInviteListRelationFilter
+  acceptedInvite?: Prisma.XOR<Prisma.AdminInviteNullableScalarRelationFilter, Prisma.AdminInviteWhereInput> | null
 }
 
 export type AdminOrderByWithRelationInput = {
@@ -258,6 +260,8 @@ export type AdminOrderByWithRelationInput = {
   artworkUploads?: Prisma.EventArtworkOrderByRelationAggregateInput
   rsvpSubmissions?: Prisma.RsvpSubmissionOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
+  invitesSent?: Prisma.AdminInviteOrderByRelationAggregateInput
+  acceptedInvite?: Prisma.AdminInviteOrderByWithRelationInput
 }
 
 export type AdminWhereUniqueInput = Prisma.AtLeast<{
@@ -282,6 +286,8 @@ export type AdminWhereUniqueInput = Prisma.AtLeast<{
   artworkUploads?: Prisma.EventArtworkListRelationFilter
   rsvpSubmissions?: Prisma.RsvpSubmissionListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  invitesSent?: Prisma.AdminInviteListRelationFilter
+  acceptedInvite?: Prisma.XOR<Prisma.AdminInviteNullableScalarRelationFilter, Prisma.AdminInviteWhereInput> | null
 }, "id" | "email" | "normalizedEmail">
 
 export type AdminOrderByWithAggregationInput = {
@@ -337,6 +343,8 @@ export type AdminCreateInput = {
   artworkUploads?: Prisma.EventArtworkCreateNestedManyWithoutUploadedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionCreateNestedManyWithoutActorAdminInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminUncheckedCreateInput = {
@@ -358,6 +366,8 @@ export type AdminUncheckedCreateInput = {
   artworkUploads?: Prisma.EventArtworkUncheckedCreateNestedManyWithoutUploadedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedCreateNestedManyWithoutActorAdminInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteUncheckedCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminUpdateInput = {
@@ -379,6 +389,8 @@ export type AdminUpdateInput = {
   artworkUploads?: Prisma.EventArtworkUpdateManyWithoutUploadedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUpdateManyWithoutActorAdminNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminUncheckedUpdateInput = {
@@ -400,6 +412,8 @@ export type AdminUncheckedUpdateInput = {
   artworkUploads?: Prisma.EventArtworkUncheckedUpdateManyWithoutUploadedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedUpdateManyWithoutActorAdminNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminCreateManyInput = {
@@ -516,6 +530,36 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
+export type AdminCreateNestedOneWithoutInvitesSentInput = {
+  create?: Prisma.XOR<Prisma.AdminCreateWithoutInvitesSentInput, Prisma.AdminUncheckedCreateWithoutInvitesSentInput>
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutInvitesSentInput
+  connect?: Prisma.AdminWhereUniqueInput
+}
+
+export type AdminCreateNestedOneWithoutAcceptedInviteInput = {
+  create?: Prisma.XOR<Prisma.AdminCreateWithoutAcceptedInviteInput, Prisma.AdminUncheckedCreateWithoutAcceptedInviteInput>
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutAcceptedInviteInput
+  connect?: Prisma.AdminWhereUniqueInput
+}
+
+export type AdminUpdateOneRequiredWithoutInvitesSentNestedInput = {
+  create?: Prisma.XOR<Prisma.AdminCreateWithoutInvitesSentInput, Prisma.AdminUncheckedCreateWithoutInvitesSentInput>
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutInvitesSentInput
+  upsert?: Prisma.AdminUpsertWithoutInvitesSentInput
+  connect?: Prisma.AdminWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUpdateToOneWithWhereWithoutInvitesSentInput, Prisma.AdminUpdateWithoutInvitesSentInput>, Prisma.AdminUncheckedUpdateWithoutInvitesSentInput>
+}
+
+export type AdminUpdateOneWithoutAcceptedInviteNestedInput = {
+  create?: Prisma.XOR<Prisma.AdminCreateWithoutAcceptedInviteInput, Prisma.AdminUncheckedCreateWithoutAcceptedInviteInput>
+  connectOrCreate?: Prisma.AdminCreateOrConnectWithoutAcceptedInviteInput
+  upsert?: Prisma.AdminUpsertWithoutAcceptedInviteInput
+  disconnect?: Prisma.AdminWhereInput | boolean
+  delete?: Prisma.AdminWhereInput | boolean
+  connect?: Prisma.AdminWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUpdateToOneWithWhereWithoutAcceptedInviteInput, Prisma.AdminUpdateWithoutAcceptedInviteInput>, Prisma.AdminUncheckedUpdateWithoutAcceptedInviteInput>
+}
+
 export type AdminCreateNestedOneWithoutSessionsInput = {
   create?: Prisma.XOR<Prisma.AdminCreateWithoutSessionsInput, Prisma.AdminUncheckedCreateWithoutSessionsInput>
   connectOrCreate?: Prisma.AdminCreateOrConnectWithoutSessionsInput
@@ -624,6 +668,214 @@ export type AdminUpdateOneWithoutAuditLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AdminUpdateToOneWithWhereWithoutAuditLogsInput, Prisma.AdminUpdateWithoutAuditLogsInput>, Prisma.AdminUncheckedUpdateWithoutAuditLogsInput>
 }
 
+export type AdminCreateWithoutInvitesSentInput = {
+  id?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  passwordHash: string
+  role?: $Enums.AdminRole
+  isActive?: boolean
+  passwordChangedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.AdminSessionCreateNestedManyWithoutAdminInput
+  loginAttempts?: Prisma.LoginAttemptCreateNestedManyWithoutAdminInput
+  eventsCreated?: Prisma.EventCreateNestedManyWithoutCreatedByInput
+  eventsUpdated?: Prisma.EventCreateNestedManyWithoutUpdatedByInput
+  artworkUploads?: Prisma.EventArtworkCreateNestedManyWithoutUploadedByInput
+  rsvpSubmissions?: Prisma.RsvpSubmissionCreateNestedManyWithoutActorAdminInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
+  acceptedInvite?: Prisma.AdminInviteCreateNestedOneWithoutAcceptedAdminInput
+}
+
+export type AdminUncheckedCreateWithoutInvitesSentInput = {
+  id?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  passwordHash: string
+  role?: $Enums.AdminRole
+  isActive?: boolean
+  passwordChangedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.AdminSessionUncheckedCreateNestedManyWithoutAdminInput
+  loginAttempts?: Prisma.LoginAttemptUncheckedCreateNestedManyWithoutAdminInput
+  eventsCreated?: Prisma.EventUncheckedCreateNestedManyWithoutCreatedByInput
+  eventsUpdated?: Prisma.EventUncheckedCreateNestedManyWithoutUpdatedByInput
+  artworkUploads?: Prisma.EventArtworkUncheckedCreateNestedManyWithoutUploadedByInput
+  rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedCreateNestedManyWithoutActorAdminInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedCreateNestedOneWithoutAcceptedAdminInput
+}
+
+export type AdminCreateOrConnectWithoutInvitesSentInput = {
+  where: Prisma.AdminWhereUniqueInput
+  create: Prisma.XOR<Prisma.AdminCreateWithoutInvitesSentInput, Prisma.AdminUncheckedCreateWithoutInvitesSentInput>
+}
+
+export type AdminCreateWithoutAcceptedInviteInput = {
+  id?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  passwordHash: string
+  role?: $Enums.AdminRole
+  isActive?: boolean
+  passwordChangedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.AdminSessionCreateNestedManyWithoutAdminInput
+  loginAttempts?: Prisma.LoginAttemptCreateNestedManyWithoutAdminInput
+  eventsCreated?: Prisma.EventCreateNestedManyWithoutCreatedByInput
+  eventsUpdated?: Prisma.EventCreateNestedManyWithoutUpdatedByInput
+  artworkUploads?: Prisma.EventArtworkCreateNestedManyWithoutUploadedByInput
+  rsvpSubmissions?: Prisma.RsvpSubmissionCreateNestedManyWithoutActorAdminInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteCreateNestedManyWithoutInvitedByInput
+}
+
+export type AdminUncheckedCreateWithoutAcceptedInviteInput = {
+  id?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  passwordHash: string
+  role?: $Enums.AdminRole
+  isActive?: boolean
+  passwordChangedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.AdminSessionUncheckedCreateNestedManyWithoutAdminInput
+  loginAttempts?: Prisma.LoginAttemptUncheckedCreateNestedManyWithoutAdminInput
+  eventsCreated?: Prisma.EventUncheckedCreateNestedManyWithoutCreatedByInput
+  eventsUpdated?: Prisma.EventUncheckedCreateNestedManyWithoutUpdatedByInput
+  artworkUploads?: Prisma.EventArtworkUncheckedCreateNestedManyWithoutUploadedByInput
+  rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedCreateNestedManyWithoutActorAdminInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteUncheckedCreateNestedManyWithoutInvitedByInput
+}
+
+export type AdminCreateOrConnectWithoutAcceptedInviteInput = {
+  where: Prisma.AdminWhereUniqueInput
+  create: Prisma.XOR<Prisma.AdminCreateWithoutAcceptedInviteInput, Prisma.AdminUncheckedCreateWithoutAcceptedInviteInput>
+}
+
+export type AdminUpsertWithoutInvitesSentInput = {
+  update: Prisma.XOR<Prisma.AdminUpdateWithoutInvitesSentInput, Prisma.AdminUncheckedUpdateWithoutInvitesSentInput>
+  create: Prisma.XOR<Prisma.AdminCreateWithoutInvitesSentInput, Prisma.AdminUncheckedCreateWithoutInvitesSentInput>
+  where?: Prisma.AdminWhereInput
+}
+
+export type AdminUpdateToOneWithWhereWithoutInvitesSentInput = {
+  where?: Prisma.AdminWhereInput
+  data: Prisma.XOR<Prisma.AdminUpdateWithoutInvitesSentInput, Prisma.AdminUncheckedUpdateWithoutInvitesSentInput>
+}
+
+export type AdminUpdateWithoutInvitesSentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.AdminSessionUpdateManyWithoutAdminNestedInput
+  loginAttempts?: Prisma.LoginAttemptUpdateManyWithoutAdminNestedInput
+  eventsCreated?: Prisma.EventUpdateManyWithoutCreatedByNestedInput
+  eventsUpdated?: Prisma.EventUpdateManyWithoutUpdatedByNestedInput
+  artworkUploads?: Prisma.EventArtworkUpdateManyWithoutUploadedByNestedInput
+  rsvpSubmissions?: Prisma.RsvpSubmissionUpdateManyWithoutActorAdminNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
+  acceptedInvite?: Prisma.AdminInviteUpdateOneWithoutAcceptedAdminNestedInput
+}
+
+export type AdminUncheckedUpdateWithoutInvitesSentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.AdminSessionUncheckedUpdateManyWithoutAdminNestedInput
+  loginAttempts?: Prisma.LoginAttemptUncheckedUpdateManyWithoutAdminNestedInput
+  eventsCreated?: Prisma.EventUncheckedUpdateManyWithoutCreatedByNestedInput
+  eventsUpdated?: Prisma.EventUncheckedUpdateManyWithoutUpdatedByNestedInput
+  artworkUploads?: Prisma.EventArtworkUncheckedUpdateManyWithoutUploadedByNestedInput
+  rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedUpdateManyWithoutActorAdminNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedUpdateOneWithoutAcceptedAdminNestedInput
+}
+
+export type AdminUpsertWithoutAcceptedInviteInput = {
+  update: Prisma.XOR<Prisma.AdminUpdateWithoutAcceptedInviteInput, Prisma.AdminUncheckedUpdateWithoutAcceptedInviteInput>
+  create: Prisma.XOR<Prisma.AdminCreateWithoutAcceptedInviteInput, Prisma.AdminUncheckedCreateWithoutAcceptedInviteInput>
+  where?: Prisma.AdminWhereInput
+}
+
+export type AdminUpdateToOneWithWhereWithoutAcceptedInviteInput = {
+  where?: Prisma.AdminWhereInput
+  data: Prisma.XOR<Prisma.AdminUpdateWithoutAcceptedInviteInput, Prisma.AdminUncheckedUpdateWithoutAcceptedInviteInput>
+}
+
+export type AdminUpdateWithoutAcceptedInviteInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.AdminSessionUpdateManyWithoutAdminNestedInput
+  loginAttempts?: Prisma.LoginAttemptUpdateManyWithoutAdminNestedInput
+  eventsCreated?: Prisma.EventUpdateManyWithoutCreatedByNestedInput
+  eventsUpdated?: Prisma.EventUpdateManyWithoutUpdatedByNestedInput
+  artworkUploads?: Prisma.EventArtworkUpdateManyWithoutUploadedByNestedInput
+  rsvpSubmissions?: Prisma.RsvpSubmissionUpdateManyWithoutActorAdminNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUpdateManyWithoutInvitedByNestedInput
+}
+
+export type AdminUncheckedUpdateWithoutAcceptedInviteInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumAdminRoleFieldUpdateOperationsInput | $Enums.AdminRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.AdminSessionUncheckedUpdateManyWithoutAdminNestedInput
+  loginAttempts?: Prisma.LoginAttemptUncheckedUpdateManyWithoutAdminNestedInput
+  eventsCreated?: Prisma.EventUncheckedUpdateManyWithoutCreatedByNestedInput
+  eventsUpdated?: Prisma.EventUncheckedUpdateManyWithoutUpdatedByNestedInput
+  artworkUploads?: Prisma.EventArtworkUncheckedUpdateManyWithoutUploadedByNestedInput
+  rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedUpdateManyWithoutActorAdminNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+}
+
 export type AdminCreateWithoutSessionsInput = {
   id?: string
   email: string
@@ -642,6 +894,8 @@ export type AdminCreateWithoutSessionsInput = {
   artworkUploads?: Prisma.EventArtworkCreateNestedManyWithoutUploadedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionCreateNestedManyWithoutActorAdminInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminUncheckedCreateWithoutSessionsInput = {
@@ -662,6 +916,8 @@ export type AdminUncheckedCreateWithoutSessionsInput = {
   artworkUploads?: Prisma.EventArtworkUncheckedCreateNestedManyWithoutUploadedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedCreateNestedManyWithoutActorAdminInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteUncheckedCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminCreateOrConnectWithoutSessionsInput = {
@@ -698,6 +954,8 @@ export type AdminUpdateWithoutSessionsInput = {
   artworkUploads?: Prisma.EventArtworkUpdateManyWithoutUploadedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUpdateManyWithoutActorAdminNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutSessionsInput = {
@@ -718,6 +976,8 @@ export type AdminUncheckedUpdateWithoutSessionsInput = {
   artworkUploads?: Prisma.EventArtworkUncheckedUpdateManyWithoutUploadedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedUpdateManyWithoutActorAdminNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminCreateWithoutLoginAttemptsInput = {
@@ -738,6 +998,8 @@ export type AdminCreateWithoutLoginAttemptsInput = {
   artworkUploads?: Prisma.EventArtworkCreateNestedManyWithoutUploadedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionCreateNestedManyWithoutActorAdminInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminUncheckedCreateWithoutLoginAttemptsInput = {
@@ -758,6 +1020,8 @@ export type AdminUncheckedCreateWithoutLoginAttemptsInput = {
   artworkUploads?: Prisma.EventArtworkUncheckedCreateNestedManyWithoutUploadedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedCreateNestedManyWithoutActorAdminInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteUncheckedCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminCreateOrConnectWithoutLoginAttemptsInput = {
@@ -794,6 +1058,8 @@ export type AdminUpdateWithoutLoginAttemptsInput = {
   artworkUploads?: Prisma.EventArtworkUpdateManyWithoutUploadedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUpdateManyWithoutActorAdminNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutLoginAttemptsInput = {
@@ -814,6 +1080,8 @@ export type AdminUncheckedUpdateWithoutLoginAttemptsInput = {
   artworkUploads?: Prisma.EventArtworkUncheckedUpdateManyWithoutUploadedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedUpdateManyWithoutActorAdminNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminCreateWithoutEventsCreatedInput = {
@@ -834,6 +1102,8 @@ export type AdminCreateWithoutEventsCreatedInput = {
   artworkUploads?: Prisma.EventArtworkCreateNestedManyWithoutUploadedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionCreateNestedManyWithoutActorAdminInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminUncheckedCreateWithoutEventsCreatedInput = {
@@ -854,6 +1124,8 @@ export type AdminUncheckedCreateWithoutEventsCreatedInput = {
   artworkUploads?: Prisma.EventArtworkUncheckedCreateNestedManyWithoutUploadedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedCreateNestedManyWithoutActorAdminInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteUncheckedCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminCreateOrConnectWithoutEventsCreatedInput = {
@@ -879,6 +1151,8 @@ export type AdminCreateWithoutEventsUpdatedInput = {
   artworkUploads?: Prisma.EventArtworkCreateNestedManyWithoutUploadedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionCreateNestedManyWithoutActorAdminInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminUncheckedCreateWithoutEventsUpdatedInput = {
@@ -899,6 +1173,8 @@ export type AdminUncheckedCreateWithoutEventsUpdatedInput = {
   artworkUploads?: Prisma.EventArtworkUncheckedCreateNestedManyWithoutUploadedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedCreateNestedManyWithoutActorAdminInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteUncheckedCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminCreateOrConnectWithoutEventsUpdatedInput = {
@@ -935,6 +1211,8 @@ export type AdminUpdateWithoutEventsCreatedInput = {
   artworkUploads?: Prisma.EventArtworkUpdateManyWithoutUploadedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUpdateManyWithoutActorAdminNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutEventsCreatedInput = {
@@ -955,6 +1233,8 @@ export type AdminUncheckedUpdateWithoutEventsCreatedInput = {
   artworkUploads?: Prisma.EventArtworkUncheckedUpdateManyWithoutUploadedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedUpdateManyWithoutActorAdminNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminUpsertWithoutEventsUpdatedInput = {
@@ -986,6 +1266,8 @@ export type AdminUpdateWithoutEventsUpdatedInput = {
   artworkUploads?: Prisma.EventArtworkUpdateManyWithoutUploadedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUpdateManyWithoutActorAdminNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutEventsUpdatedInput = {
@@ -1006,6 +1288,8 @@ export type AdminUncheckedUpdateWithoutEventsUpdatedInput = {
   artworkUploads?: Prisma.EventArtworkUncheckedUpdateManyWithoutUploadedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedUpdateManyWithoutActorAdminNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminCreateWithoutArtworkUploadsInput = {
@@ -1026,6 +1310,8 @@ export type AdminCreateWithoutArtworkUploadsInput = {
   eventsUpdated?: Prisma.EventCreateNestedManyWithoutUpdatedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionCreateNestedManyWithoutActorAdminInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminUncheckedCreateWithoutArtworkUploadsInput = {
@@ -1046,6 +1332,8 @@ export type AdminUncheckedCreateWithoutArtworkUploadsInput = {
   eventsUpdated?: Prisma.EventUncheckedCreateNestedManyWithoutUpdatedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedCreateNestedManyWithoutActorAdminInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteUncheckedCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminCreateOrConnectWithoutArtworkUploadsInput = {
@@ -1082,6 +1370,8 @@ export type AdminUpdateWithoutArtworkUploadsInput = {
   eventsUpdated?: Prisma.EventUpdateManyWithoutUpdatedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUpdateManyWithoutActorAdminNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutArtworkUploadsInput = {
@@ -1102,6 +1392,8 @@ export type AdminUncheckedUpdateWithoutArtworkUploadsInput = {
   eventsUpdated?: Prisma.EventUncheckedUpdateManyWithoutUpdatedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedUpdateManyWithoutActorAdminNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminCreateWithoutRsvpSubmissionsInput = {
@@ -1122,6 +1414,8 @@ export type AdminCreateWithoutRsvpSubmissionsInput = {
   eventsUpdated?: Prisma.EventCreateNestedManyWithoutUpdatedByInput
   artworkUploads?: Prisma.EventArtworkCreateNestedManyWithoutUploadedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminUncheckedCreateWithoutRsvpSubmissionsInput = {
@@ -1142,6 +1436,8 @@ export type AdminUncheckedCreateWithoutRsvpSubmissionsInput = {
   eventsUpdated?: Prisma.EventUncheckedCreateNestedManyWithoutUpdatedByInput
   artworkUploads?: Prisma.EventArtworkUncheckedCreateNestedManyWithoutUploadedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutAdminInput
+  invitesSent?: Prisma.AdminInviteUncheckedCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminCreateOrConnectWithoutRsvpSubmissionsInput = {
@@ -1178,6 +1474,8 @@ export type AdminUpdateWithoutRsvpSubmissionsInput = {
   eventsUpdated?: Prisma.EventUpdateManyWithoutUpdatedByNestedInput
   artworkUploads?: Prisma.EventArtworkUpdateManyWithoutUploadedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutRsvpSubmissionsInput = {
@@ -1198,6 +1496,8 @@ export type AdminUncheckedUpdateWithoutRsvpSubmissionsInput = {
   eventsUpdated?: Prisma.EventUncheckedUpdateManyWithoutUpdatedByNestedInput
   artworkUploads?: Prisma.EventArtworkUncheckedUpdateManyWithoutUploadedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminCreateWithoutAuditLogsInput = {
@@ -1218,6 +1518,8 @@ export type AdminCreateWithoutAuditLogsInput = {
   eventsUpdated?: Prisma.EventCreateNestedManyWithoutUpdatedByInput
   artworkUploads?: Prisma.EventArtworkCreateNestedManyWithoutUploadedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionCreateNestedManyWithoutActorAdminInput
+  invitesSent?: Prisma.AdminInviteCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminUncheckedCreateWithoutAuditLogsInput = {
@@ -1238,6 +1540,8 @@ export type AdminUncheckedCreateWithoutAuditLogsInput = {
   eventsUpdated?: Prisma.EventUncheckedCreateNestedManyWithoutUpdatedByInput
   artworkUploads?: Prisma.EventArtworkUncheckedCreateNestedManyWithoutUploadedByInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedCreateNestedManyWithoutActorAdminInput
+  invitesSent?: Prisma.AdminInviteUncheckedCreateNestedManyWithoutInvitedByInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedCreateNestedOneWithoutAcceptedAdminInput
 }
 
 export type AdminCreateOrConnectWithoutAuditLogsInput = {
@@ -1274,6 +1578,8 @@ export type AdminUpdateWithoutAuditLogsInput = {
   eventsUpdated?: Prisma.EventUpdateManyWithoutUpdatedByNestedInput
   artworkUploads?: Prisma.EventArtworkUpdateManyWithoutUploadedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUpdateManyWithoutActorAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 export type AdminUncheckedUpdateWithoutAuditLogsInput = {
@@ -1294,6 +1600,8 @@ export type AdminUncheckedUpdateWithoutAuditLogsInput = {
   eventsUpdated?: Prisma.EventUncheckedUpdateManyWithoutUpdatedByNestedInput
   artworkUploads?: Prisma.EventArtworkUncheckedUpdateManyWithoutUploadedByNestedInput
   rsvpSubmissions?: Prisma.RsvpSubmissionUncheckedUpdateManyWithoutActorAdminNestedInput
+  invitesSent?: Prisma.AdminInviteUncheckedUpdateManyWithoutInvitedByNestedInput
+  acceptedInvite?: Prisma.AdminInviteUncheckedUpdateOneWithoutAcceptedAdminNestedInput
 }
 
 
@@ -1309,6 +1617,7 @@ export type AdminCountOutputType = {
   artworkUploads: number
   rsvpSubmissions: number
   auditLogs: number
+  invitesSent: number
 }
 
 export type AdminCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1319,6 +1628,7 @@ export type AdminCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   artworkUploads?: boolean | AdminCountOutputTypeCountArtworkUploadsArgs
   rsvpSubmissions?: boolean | AdminCountOutputTypeCountRsvpSubmissionsArgs
   auditLogs?: boolean | AdminCountOutputTypeCountAuditLogsArgs
+  invitesSent?: boolean | AdminCountOutputTypeCountInvitesSentArgs
 }
 
 /**
@@ -1380,6 +1690,13 @@ export type AdminCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Types
   where?: Prisma.AuditLogWhereInput
 }
 
+/**
+ * AdminCountOutputType without action
+ */
+export type AdminCountOutputTypeCountInvitesSentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AdminInviteWhereInput
+}
+
 
 export type AdminSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1400,6 +1717,8 @@ export type AdminSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   artworkUploads?: boolean | Prisma.Admin$artworkUploadsArgs<ExtArgs>
   rsvpSubmissions?: boolean | Prisma.Admin$rsvpSubmissionsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Admin$auditLogsArgs<ExtArgs>
+  invitesSent?: boolean | Prisma.Admin$invitesSentArgs<ExtArgs>
+  acceptedInvite?: boolean | Prisma.Admin$acceptedInviteArgs<ExtArgs>
   _count?: boolean | Prisma.AdminCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["admin"]>
 
@@ -1454,6 +1773,8 @@ export type AdminInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   artworkUploads?: boolean | Prisma.Admin$artworkUploadsArgs<ExtArgs>
   rsvpSubmissions?: boolean | Prisma.Admin$rsvpSubmissionsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Admin$auditLogsArgs<ExtArgs>
+  invitesSent?: boolean | Prisma.Admin$invitesSentArgs<ExtArgs>
+  acceptedInvite?: boolean | Prisma.Admin$acceptedInviteArgs<ExtArgs>
   _count?: boolean | Prisma.AdminCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AdminIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1469,6 +1790,8 @@ export type $AdminPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     artworkUploads: Prisma.$EventArtworkPayload<ExtArgs>[]
     rsvpSubmissions: Prisma.$RsvpSubmissionPayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+    invitesSent: Prisma.$AdminInvitePayload<ExtArgs>[]
+    acceptedInvite: Prisma.$AdminInvitePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1883,6 +2206,8 @@ export interface Prisma__AdminClient<T, Null = never, ExtArgs extends runtime.Ty
   artworkUploads<T extends Prisma.Admin$artworkUploadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$artworkUploadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventArtworkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   rsvpSubmissions<T extends Prisma.Admin$rsvpSubmissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$rsvpSubmissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RsvpSubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.Admin$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invitesSent<T extends Prisma.Admin$invitesSentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$invitesSentArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AdminInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  acceptedInvite<T extends Prisma.Admin$acceptedInviteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Admin$acceptedInviteArgs<ExtArgs>>): Prisma.Prisma__AdminInviteClient<runtime.Types.Result.GetResult<Prisma.$AdminInvitePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2481,6 +2806,49 @@ export type Admin$auditLogsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.AuditLogScalarFieldEnum | Prisma.AuditLogScalarFieldEnum[]
+}
+
+/**
+ * Admin.invitesSent
+ */
+export type Admin$invitesSentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AdminInvite
+   */
+  select?: Prisma.AdminInviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AdminInvite
+   */
+  omit?: Prisma.AdminInviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdminInviteInclude<ExtArgs> | null
+  where?: Prisma.AdminInviteWhereInput
+  orderBy?: Prisma.AdminInviteOrderByWithRelationInput | Prisma.AdminInviteOrderByWithRelationInput[]
+  cursor?: Prisma.AdminInviteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AdminInviteScalarFieldEnum | Prisma.AdminInviteScalarFieldEnum[]
+}
+
+/**
+ * Admin.acceptedInvite
+ */
+export type Admin$acceptedInviteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AdminInvite
+   */
+  select?: Prisma.AdminInviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AdminInvite
+   */
+  omit?: Prisma.AdminInviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AdminInviteInclude<ExtArgs> | null
+  where?: Prisma.AdminInviteWhereInput
 }
 
 /**

@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight, Pencil } from "lucide-react";
 import Link from "next/link";
 
 import { StatusBadge } from "@/components/ui/status-badge";
-import { requireAdminPage } from "@/lib/admin-page";
+import { requireEventPage } from "@/lib/admin-page";
 import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -19,8 +19,8 @@ export default async function RsvpsPage({
     updated?: string;
   }>;
 }) {
-  await requireAdminPage();
   const [{ eventId }, query] = await Promise.all([params, searchParams]);
+  await requireEventPage(eventId);
   const page = Math.max(1, Number.parseInt(query.page ?? "1", 10) || 1);
   const pageSize = 25;
   const search = (query.q ?? "").trim().slice(0, 160);

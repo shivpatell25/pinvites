@@ -95,6 +95,7 @@ enum EmailType {
   CONFIRMATION
   RSVP_UPDATE
   MANAGEMENT_LINK
+  ADMIN_INVITE
 }
 
 enum EmailStatus {
@@ -140,9 +141,37 @@ model Admin {
   artworkUploads    EventArtwork[]   @relation("ArtworkUploadedBy")
   rsvpSubmissions   RsvpSubmission[]
   auditLogs         AuditLog[]
+  invitesSent       AdminInvite[]    @relation("AdminInviteSender")
+  acceptedInvite    AdminInvite?     @relation("AdminInviteAcceptedAdmin")
 
   @@index([isActive, createdAt])
   @@map("admins")
+}
+
+model AdminInvite {
+  id              String    @id @default(uuid()) @db.Uuid
+  email           String    @db.VarChar(320)
+  normalizedEmail String    @map("normalized_email") @db.VarChar(320)
+  displayName     String    @map("display_name") @db.VarChar(120)
+  role            AdminRole @default(ADMIN)
+  tokenHash       String    @unique @map("token_hash") @db.Char(64)
+  expiresAt       DateTime  @map("expires_at")
+  sentAt          DateTime? @map("sent_at")
+  acceptedAt      DateTime? @map("accepted_at")
+  revokedAt       DateTime? @map("revoked_at")
+  deliveryVersion Int       @default(1) @map("delivery_version")
+  lastError       String?   @map("last_error") @db.Text
+  invitedById     String    @map("invited_by_id") @db.Uuid
+  acceptedAdminId String?   @unique @map("accepted_admin_id") @db.Uuid
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  invitedBy       Admin     @relation("AdminInviteSender", fields: [invitedById], references: [id], onDelete: Restrict)
+  acceptedAdmin   Admin?    @relation("AdminInviteAcceptedAdmin", fields: [acceptedAdminId], references: [id], onDelete: SetNull)
+
+  @@index([normalizedEmail, acceptedAt, revokedAt])
+  @@index([invitedById, createdAt])
+  @@index([expiresAt])
+  @@map("admin_invites")
 }
 
 model AdminSession {

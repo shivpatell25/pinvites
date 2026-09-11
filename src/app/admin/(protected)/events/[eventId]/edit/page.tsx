@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { EventForm } from "@/components/admin/event-form";
-import { requireAdminPage } from "@/lib/admin-page";
+import { requireEventPage } from "@/lib/admin-page";
 import { db } from "@/lib/db";
 
 import { updateEventAction } from "@/app/admin/events/actions";
@@ -13,8 +13,8 @@ export default async function EditEventPage({
   params: Promise<{ eventId: string }>;
   searchParams: Promise<{ error?: string; duplicated?: string }>;
 }) {
-  await requireAdminPage();
   const [{ eventId }, query] = await Promise.all([params, searchParams]);
+  await requireEventPage(eventId);
   const event = await db.event.findUnique({ where: { id: eventId } });
   if (!event) notFound();
   return (

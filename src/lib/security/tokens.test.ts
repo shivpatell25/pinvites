@@ -39,6 +39,23 @@ describe("opaque security tokens", () => {
     ).toBe(false);
   });
 
+  it("creates a distinct one-time administrator invitation credential", () => {
+    const invite = generateSecureToken("admin-invite", TEST_SECRET);
+
+    expect(hasValidTokenShape(invite.token, "admin-invite")).toBe(true);
+    expect(
+      verifyTokenHash(
+        invite.token,
+        invite.tokenHash,
+        "admin-invite",
+        TEST_SECRET,
+      ),
+    ).toBe(true);
+    expect(hashToken(invite.token, "admin-invite", TEST_SECRET)).not.toBe(
+      hashToken(invite.token, "session", TEST_SECRET),
+    );
+  });
+
   it("rejects malformed and modified values", () => {
     const { token, tokenHash } = generateSecureToken("management", TEST_SECRET);
     expect(

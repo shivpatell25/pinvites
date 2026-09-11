@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { AdminRsvpEditor } from "@/components/admin/admin-rsvp-editor";
 import { updateRsvpAsAdminAction } from "@/app/admin/events/[eventId]/rsvps/actions";
-import { requireAdminPage } from "@/lib/admin-page";
+import { requireEventPage } from "@/lib/admin-page";
 import { db } from "@/lib/db";
 
 export default async function EditRsvpPage({
@@ -12,11 +12,11 @@ export default async function EditRsvpPage({
   params: Promise<{ eventId: string; rsvpId: string }>;
   searchParams: Promise<{ error?: string }>;
 }) {
-  await requireAdminPage();
   const [{ eventId, rsvpId }, query] = await Promise.all([
     params,
     searchParams,
   ]);
+  await requireEventPage(eventId);
   const rsvp = await db.rsvp.findFirst({
     where: { id: rsvpId, household: { eventId, archivedAt: null } },
     include: {

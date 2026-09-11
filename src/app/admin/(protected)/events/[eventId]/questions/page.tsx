@@ -17,7 +17,7 @@ import {
 import { SubmitButton } from "@/components/ui/submit-button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { QuestionConditionOperator } from "@/generated/prisma/client";
-import { requireAdminPage } from "@/lib/admin-page";
+import { requireEventPage } from "@/lib/admin-page";
 import { db } from "@/lib/db";
 
 import {
@@ -36,8 +36,8 @@ export default async function QuestionsPage({
   params: Promise<{ eventId: string }>;
   searchParams: Promise<{ error?: string }>;
 }) {
-  await requireAdminPage();
   const [{ eventId }, query] = await Promise.all([params, searchParams]);
+  await requireEventPage(eventId);
   const event = await db.event.findUnique({
     where: { id: eventId },
     include: {

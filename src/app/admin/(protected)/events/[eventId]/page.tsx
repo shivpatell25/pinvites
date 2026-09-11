@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { MetricCard } from "@/components/admin/metric-card";
 import { TrendChart } from "@/components/admin/trend-chart";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { requireAdminPage } from "@/lib/admin-page";
+import { requireEventPage } from "@/lib/admin-page";
 import { db } from "@/lib/db";
 import { formatPercent } from "@/lib/format";
 
@@ -22,8 +22,8 @@ export default async function EventOverviewPage({
     error?: string;
   }>;
 }) {
-  await requireAdminPage();
   const [{ eventId }, message] = await Promise.all([params, searchParams]);
+  await requireEventPage(eventId);
   const event = await db.event.findUnique({
     where: { id: eventId },
     select: { id: true },

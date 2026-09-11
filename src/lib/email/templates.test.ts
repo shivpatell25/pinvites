@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 import { smtpConfigurationFromEnv } from "./mailer";
-import { createInvitationEmail, createManagementLinkEmail } from "./templates";
+import {
+  createAdminInviteEmail,
+  createInvitationEmail,
+  createManagementLinkEmail,
+} from "./templates";
 
 describe("email templates", () => {
   it("renders responsive HTML and plain text without trusting event content", () => {
@@ -44,6 +48,22 @@ describe("email templates", () => {
 
     expect(rendered.text).toContain(
       "Email address alone can’t be used to change an RSVP",
+    );
+  });
+
+  it("renders a private administrator account invitation", () => {
+    const rendered = createAdminInviteEmail({
+      recipientName: "Grace",
+      inviterName: "Ada",
+      setupUrl: "https://invites.example.test/admin/invite/pva_private",
+      expiresLine: "Expires October 10, 2026",
+    });
+
+    expect(rendered.subject).toContain("Ada invited you");
+    expect(rendered.text).toContain("Create my account");
+    expect(rendered.text).toContain("one-time setup link is private");
+    expect(rendered.html).toContain(
+      "https://invites.example.test/admin/invite/",
     );
   });
 });

@@ -2,17 +2,19 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 
 import { getServerEnvironment } from "@/lib/env";
 
-export type TokenPurpose = "invitation" | "management" | "session" | "csrf";
+export type TokenPurpose =
+  "invitation" | "management" | "session" | "csrf" | "admin-invite";
 
 const TOKEN_PREFIX: Record<TokenPurpose, string> = {
   invitation: "pvi",
   management: "pvm",
   session: "pvs",
   csrf: "pvc",
+  "admin-invite": "pva",
 };
 
 const MINIMUM_RANDOM_BYTES = 32;
-const TOKEN_PATTERN = /^(pvi|pvm|pvs|pvc)_[A-Za-z0-9_-]{43,}$/;
+const TOKEN_PATTERN = /^(pvi|pvm|pvs|pvc|pva)_[A-Za-z0-9_-]{43,}$/;
 
 function purposeKey(purpose: TokenPurpose, appSecret: string): Buffer {
   return createHmac("sha256", appSecret)

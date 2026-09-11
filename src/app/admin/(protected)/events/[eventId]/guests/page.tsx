@@ -15,7 +15,7 @@ import { notFound } from "next/navigation";
 import { HouseholdForm } from "@/components/admin/household-form";
 import { StatusBadge } from "@/components/ui/status-badge";
 import type { Prisma } from "@/generated/prisma/client";
-import { requireAdminPage } from "@/lib/admin-page";
+import { requireEventPage } from "@/lib/admin-page";
 import { db } from "@/lib/db";
 
 import {
@@ -44,8 +44,8 @@ export default async function GuestsPage({
     imported?: string;
   }>;
 }) {
-  await requireAdminPage();
   const [{ eventId }, query] = await Promise.all([params, searchParams]);
+  await requireEventPage(eventId);
   if (
     !(await db.event.findUnique({
       where: { id: eventId },
