@@ -167,12 +167,77 @@ function artworkAccent(image: HTMLImageElement) {
   }
 }
 
+function artworkEdgeGradient(image: HTMLImageElement) {
+  try {
+    const naturalWidth = image.naturalWidth;
+    const naturalHeight = image.naturalHeight;
+    const renderedWidth = image.clientWidth;
+    const renderedHeight = image.clientHeight;
+    if (!naturalWidth || !naturalHeight || !renderedWidth || !renderedHeight) {
+      return null;
+    }
+
+    const coverScale = Math.max(
+      renderedWidth / naturalWidth,
+      renderedHeight / naturalHeight,
+    );
+    const sourceWidth = renderedWidth / coverScale;
+    const sourceHeight = renderedHeight / coverScale;
+    const sourceX = (naturalWidth - sourceWidth) / 2;
+    const sourceY = (naturalHeight - sourceHeight) / 2;
+    const bandHeight = Math.max(1, sourceHeight * 0.055);
+    const sampleWidth = 12;
+    const sampleHeight = 4;
+    const canvas = document.createElement("canvas");
+    canvas.width = sampleWidth;
+    canvas.height = sampleHeight;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) return null;
+
+    context.drawImage(
+      image,
+      sourceX,
+      sourceY + sourceHeight - bandHeight,
+      sourceWidth,
+      bandHeight,
+      0,
+      0,
+      sampleWidth,
+      sampleHeight,
+    );
+    const pixels = context.getImageData(0, 0, sampleWidth, sampleHeight).data;
+    const stops = Array.from({ length: sampleWidth }, (_, x) => {
+      let red = 0;
+      let green = 0;
+      let blue = 0;
+      let samples = 0;
+      for (let y = 0; y < sampleHeight; y += 1) {
+        const index = (y * sampleWidth + x) * 4;
+        if ((pixels[index + 3] ?? 0) < 128) continue;
+        red += pixels[index] ?? 0;
+        green += pixels[index + 1] ?? 0;
+        blue += pixels[index + 2] ?? 0;
+        samples += 1;
+      }
+      const divisor = Math.max(1, samples);
+      const position = Math.round((x / (sampleWidth - 1)) * 100);
+      return `rgb(${Math.round(red / divisor)} ${Math.round(green / divisor)} ${Math.round(blue / divisor)}) ${position}%`;
+    });
+
+    return `linear-gradient(90deg, ${stops.join(", ")})`;
+  } catch {
+    return null;
+  }
+}
+
 function Artwork({
   event,
   onAccent,
+  onEdge,
 }: {
   event: PublicEvent;
   onAccent: (accent: string) => void;
+  onEdge: (gradient: string) => void;
 }) {
   const [failed, setFailed] = useState(false);
 
@@ -181,52 +246,29 @@ function Artwork({
   }
 
   return (
-    <>
-      <Image
-        src={event.artworkUrl}
-        alt={`Artwork for ${event.title}`}
-        fill
-        sizes="(min-width: 980px) 56vw, 100vw"
-        className={styles.heroArtwork}
-        priority
-        unoptimized
-        onLoad={(image) => {
-          const accent = artworkAccent(image.currentTarget);
-          if (accent) onAccent(accent);
-        }}
-        onError={() => setFailed(true)}
-      />
-      <Image
-        src={event.artworkUrl}
-        alt=""
-        aria-hidden="true"
-        fill
-        sizes="(max-width: 639px) 108vw, 1px"
-        className={styles.heroArtworkSoft}
-        unoptimized
-      />
-    </>
+    <Image
+      src={event.artworkUrl}
+      alt={`Artwork for ${event.title}`}
+      fill
+      sizes="(min-width: 980px) 56vw, 100vw"
+      className={styles.heroArtwork}
+      priority
+      unoptimized
+      onLoad={(image) => {
+        const accent = artworkAccent(image.currentTarget);
+        const edge = artworkEdgeGradient(image.currentTarget);
+        if (accent) onAccent(accent);
+        if (edge) onEdge(edge);
+      }}
+      onError={() => setFailed(true)}
+    />
   );
 }
 
-function ArtworkExtension({ event }: { event: PublicEvent }) {
-  const [failed, setFailed] = useState(false);
-
-  if (!event.artworkUrl || failed) return null;
-
+function ArtworkExtension() {
   return (
     <div className={styles.heroColorExtension} aria-hidden="true">
-      <div className={styles.heroColorExtensionCanvas}>
-        <Image
-          src={event.artworkUrl}
-          alt=""
-          fill
-          sizes="(max-width: 639px) 116vw, 1px"
-          className={styles.heroColorExtensionArtwork}
-          unoptimized
-          onError={() => setFailed(true)}
-        />
-      </div>
+      <div className={styles.heroColorExtensionCanvas} />
     </div>
   );
 }
@@ -270,6 +312,7 @@ export function InvitationExperience({
 }: InvitationExperienceProps) {
   const [rsvpOpen, setRsvpOpen] = useState(startWithRsvpOpen);
   const [artworkAccent, setArtworkAccent] = useState<string | null>(null);
+  const [artworkEdge, setArtworkEdge] = useState<string | null>(null);
   const [hasScrolled, setHasScrolled] = useState(false);
   const date = useMemo(() => dateParts(event), [event]);
   const existing = access.initialRsvp?.response;
@@ -291,6 +334,9 @@ export function InvitationExperience({
         {
           "--event-accent": accent,
           "--event-accent-soft": `color-mix(in srgb, ${accent} 16%, transparent)`,
+          "--hero-edge-gradient":
+            artworkEdge ??
+            `linear-gradient(90deg, color-mix(in srgb, ${accent} 36%, #09090b), #09090b 52%, color-mix(in srgb, ${accent} 24%, #09090b))`,
         } as CSSProperties
       }
     >
@@ -305,9 +351,13 @@ export function InvitationExperience({
         }}
       >
         <header className={styles.hero} aria-labelledby="event-title">
-          <Artwork event={event} onAccent={setArtworkAccent} />
+          <Artwork
+            event={event}
+            onAccent={setArtworkAccent}
+            onEdge={setArtworkEdge}
+          />
           <div className={styles.heroScrim} aria-hidden="true" />
-          <ArtworkExtension event={event} />
+          <ArtworkExtension />
           <div className={styles.heroBar}>
             {event.isPublic ? (
               <ShareButton
