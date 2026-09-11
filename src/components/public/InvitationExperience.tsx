@@ -220,8 +220,21 @@ function artworkEdgeGradient(image: HTMLImageElement) {
         samples += 1;
       }
       const divisor = Math.max(1, samples);
+      const averageRed = red / divisor;
+      const averageGreen = green / divisor;
+      const averageBlue = blue / divisor;
+      const maximumChannel = Math.max(averageRed, averageGreen, averageBlue);
+      const minimumChannel = Math.min(averageRed, averageGreen, averageBlue);
+      const luminance =
+        averageRed * 0.2126 + averageGreen * 0.7152 + averageBlue * 0.0722;
+      const saturation =
+        maximumChannel === 0
+          ? 0
+          : (maximumChannel - minimumChannel) / maximumChannel;
+      const neutralHighlightScale =
+        luminance > 108 && saturation < 0.24 ? 84 / luminance : 1;
       const position = Math.round((x / (sampleWidth - 1)) * 100);
-      return `rgb(${Math.round(red / divisor)} ${Math.round(green / divisor)} ${Math.round(blue / divisor)}) ${position}%`;
+      return `rgb(${Math.round(averageRed * neutralHighlightScale)} ${Math.round(averageGreen * neutralHighlightScale)} ${Math.round(averageBlue * neutralHighlightScale)}) ${position}%`;
     });
 
     return `linear-gradient(90deg, ${stops.join(", ")})`;
