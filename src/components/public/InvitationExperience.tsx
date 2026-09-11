@@ -276,11 +276,7 @@ export function InvitationExperience({
             <span className={styles.heroControlSpacer} aria-hidden="true" />
           )}
           <span className={styles.heroMark}>
-            <PinvitesBrand
-              compact
-              className={styles.heroMarkImage}
-              priority
-            />
+            <PinvitesBrand compact className={styles.heroMarkImage} priority />
           </span>
         </div>
         <div className={styles.heroCopy}>

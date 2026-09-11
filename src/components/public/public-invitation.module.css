@@ -114,8 +114,7 @@
   align-items: center;
   justify-content: space-between;
   padding: max(20px, env(safe-area-inset-top))
-    max(20px, env(safe-area-inset-right)) 0
-    max(20px, env(safe-area-inset-left));
+    max(20px, env(safe-area-inset-right)) 0 max(20px, env(safe-area-inset-left));
 }
 
 .heroControlSpacer,
@@ -160,12 +159,6 @@
   width: 200px;
   margin-bottom: 38px;
   filter: drop-shadow(0 1px 10px rgba(0, 0, 0, 0.26));
-}
-
-@media (max-width: 639px) {
-  .contentBrand {
-    width: min(72vw, 200px);
-  }
 }
 
 .iconButton {
@@ -1106,6 +1099,113 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@media (max-width: 639px) {
+  .hero {
+    min-height: min(68svh, 620px);
+  }
+
+  .heroScrim {
+    background:
+      linear-gradient(180deg, rgba(7, 9, 12, 0.48), transparent 28%),
+      linear-gradient(
+        0deg,
+        rgba(7, 9, 12, 0.94),
+        rgba(7, 9, 12, 0.38) 62%,
+        transparent 86%
+      );
+  }
+
+  .heroBar {
+    --hero-control-size: 52px;
+    padding-top: max(14px, env(safe-area-inset-top));
+    padding-right: max(16px, env(safe-area-inset-right));
+    padding-left: max(16px, env(safe-area-inset-left));
+  }
+
+  .heroMark,
+  .iconButton {
+    border-radius: 16px;
+  }
+
+  .heroMarkImage {
+    width: 78px;
+    height: 78px;
+  }
+
+  .iconButton svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .heroCopy {
+    max-width: 100%;
+    padding: 34px 22px 30px;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.62);
+  }
+
+  .host {
+    margin-bottom: 11px;
+    font-size: 0.68rem;
+  }
+
+  .title {
+    max-width: 100%;
+    font-size: clamp(3rem, 14vw, 4.45rem);
+    line-height: 0.91;
+  }
+
+  .subtitle {
+    margin-top: 15px;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.94rem;
+    line-height: 1.45;
+  }
+
+  .heroDate {
+    gap: 11px;
+    margin-top: 19px;
+    font-size: 0.82rem;
+  }
+
+  .main::before {
+    position: absolute;
+    z-index: 1;
+    top: -52px;
+    right: 0;
+    left: 0;
+    height: 52px;
+    background: linear-gradient(transparent, var(--paper));
+    pointer-events: none;
+    content: "";
+  }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    padding: 32px 22px calc(112px + env(safe-area-inset-bottom));
+  }
+
+  .contentBrand {
+    width: 132px;
+    margin-bottom: 30px;
+  }
+
+  .personalGreeting {
+    margin-bottom: 44px;
+  }
+
+  .stickyBar {
+    padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
+    background: rgba(9, 9, 11, 0.76);
+  }
+
+  .stickyBar .primaryButton {
+    min-height: 50px;
+    border-radius: 15px;
+    font-size: 0.88rem;
   }
 }
 
