@@ -21,7 +21,11 @@ describe("email templates", () => {
     expect(rendered.html).toContain("#0a84ff");
     expect(rendered.html).toContain('aria-label="Pinvites compact mark"');
     expect(rendered.html).toContain('aria-label="Pinvites wordmark"');
-    expect(rendered.html).toContain("font-family:'DM Serif Display'");
+    expect(rendered.html).toContain(
+      "font-family:Baskerville,'Baskerville Old Face','Palatino Linotype'",
+    );
+    expect(rendered.html).toContain("<b><i>pinvites</i></b>");
+    expect(rendered.html).not.toContain("fonts.googleapis.com");
     expect(rendered.html).not.toContain("raw.githubusercontent.com");
     expect(rendered.html).not.toContain("cid:");
     expect(rendered.html).not.toContain("<img");

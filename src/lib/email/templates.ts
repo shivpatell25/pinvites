@@ -237,15 +237,14 @@ function renderLayout(
   <meta name="supported-color-schemes" content="light">
   <title>${escapeHtml(input.headline)}</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
     @media only screen and (max-width: 620px) {
       .page-pad { padding: 0 !important; }
       .shell { border-radius: 0 !important; }
       .hero { padding: 26px 24px 36px !important; }
       .content { padding: 34px 24px 30px !important; }
       .headline { font-size: 44px !important; line-height: .96 !important; }
-      .brand-mark-type { font-size: 30px !important; }
-      .brand-wordmark-type { font-size: 30px !important; }
+      .brand-mark-type { font-size: 31px !important; }
+      .brand-wordmark-type { font-size: 32px !important; letter-spacing: -1.5px !important; }
       .button-cell { display: block !important; }
       .button-link { display: block !important; text-align: center !important; }
     }
@@ -264,7 +263,7 @@ function renderLayout(
                 <tr>
                   <td valign="middle" style="color:#8e8e93;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;">${escapeHtml(input.eyebrow)}</td>
                   <td align="right" valign="middle">
-                    <span role="img" aria-label="Pinvites compact mark" style="display:inline-block;color:#8e8e93;font-family:Georgia,'Times New Roman',serif;font-size:13px;line-height:1;vertical-align:top;">&#10022;</span><span class="brand-mark-type" style="display:inline-block;margin-left:4px;color:#f5f5f7;font-family:'DM Serif Display',Georgia,'Times New Roman',serif;font-size:34px;font-style:italic;font-weight:700;letter-spacing:-.055em;line-height:1;">pi</span>
+                    <span role="img" aria-label="Pinvites compact mark" style="display:inline-block;color:#8e8e93;font-family:Baskerville,'Palatino Linotype',Palatino,serif;font-size:13px;line-height:1;vertical-align:top;">&#10022;</span><span class="brand-mark-type" style="display:inline-block;margin-left:3px;color:#f5f5f7;font-family:Baskerville,'Baskerville Old Face','Palatino Linotype',Palatino,'Book Antiqua',serif!important;font-size:36px;font-style:italic;font-weight:700;font-synthesis:weight style;font-kerning:normal;letter-spacing:-2px;line-height:.92;"><b><i>pi</i></b></span>
                   </td>
                 </tr>
               </table>
@@ -289,7 +288,7 @@ function renderLayout(
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:38px;border-top:1px solid #38383a;">
                 <tr>
                   <td style="padding-top:24px;">
-                    <span class="brand-wordmark-type" role="img" aria-label="Pinvites wordmark" style="display:inline-block;color:#f5f5f7;font-family:'DM Serif Display',Georgia,'Times New Roman',serif;font-size:34px;font-style:italic;font-weight:700;letter-spacing:-.045em;line-height:1;">pinvites</span>
+                    <span class="brand-wordmark-type" role="img" aria-label="Pinvites wordmark" style="display:inline-block;color:#f5f5f7;font-family:Baskerville,'Baskerville Old Face','Palatino Linotype',Palatino,'Book Antiqua',serif!important;font-size:38px;font-style:italic;font-weight:700;font-synthesis:weight style;font-kerning:normal;letter-spacing:-2px;line-height:.94;"><b><i>pinvites</i></b></span>
                   </td>
                   <td align="right" valign="bottom" style="padding-top:24px;color:#636366;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;">Invitations, beautifully considered.</td>
                 </tr>
