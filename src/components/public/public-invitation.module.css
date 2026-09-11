@@ -1231,24 +1231,30 @@
   .heroColorExtension {
     position: absolute;
     z-index: 1;
-    top: -1px;
+    top: -56px;
     right: 0;
     left: 0;
     display: block;
-    height: 164px;
+    height: 220px;
     overflow: hidden;
     -webkit-mask-image: linear-gradient(
       to bottom,
-      #000 0%,
-      rgba(0, 0, 0, 0.78) 32%,
-      rgba(0, 0, 0, 0.24) 68%,
+      transparent 0%,
+      rgba(0, 0, 0, 0.18) 10%,
+      rgba(0, 0, 0, 0.72) 21%,
+      #000 30%,
+      rgba(0, 0, 0, 0.82) 48%,
+      rgba(0, 0, 0, 0.28) 74%,
       transparent 100%
     );
     mask-image: linear-gradient(
       to bottom,
-      #000 0%,
-      rgba(0, 0, 0, 0.78) 32%,
-      rgba(0, 0, 0, 0.24) 68%,
+      transparent 0%,
+      rgba(0, 0, 0, 0.18) 10%,
+      rgba(0, 0, 0, 0.72) 21%,
+      #000 30%,
+      rgba(0, 0, 0, 0.82) 48%,
+      rgba(0, 0, 0, 0.28) 74%,
       transparent 100%
     );
     pointer-events: none;
@@ -1269,12 +1275,12 @@
 
   .heroColorExtensionCanvas {
     position: absolute;
-    top: -26px;
+    top: 40px;
     right: -8%;
     left: -8%;
     height: var(--mobile-hero-height);
-    filter: blur(22px) saturate(104%);
-    opacity: 0.94;
+    filter: blur(26px) saturate(104%);
+    opacity: 0.96;
     transform: scaleY(-1);
     transform-origin: center;
   }
