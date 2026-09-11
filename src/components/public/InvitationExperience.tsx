@@ -206,7 +206,7 @@ function artworkEdgeGradient(image: HTMLImageElement) {
       sampleHeight,
     );
     const pixels = context.getImageData(0, 0, sampleWidth, sampleHeight).data;
-    const stops = Array.from({ length: sampleWidth }, (_, x) => {
+    const columns = Array.from({ length: sampleWidth }, (_, x) => {
       let red = 0;
       let green = 0;
       let blue = 0;
@@ -231,10 +231,55 @@ function artworkEdgeGradient(image: HTMLImageElement) {
         maximumChannel === 0
           ? 0
           : (maximumChannel - minimumChannel) / maximumChannel;
-      const neutralHighlightScale =
-        luminance > 108 && saturation < 0.24 ? 84 / luminance : 1;
+
+      return {
+        red: averageRed,
+        green: averageGreen,
+        blue: averageBlue,
+        luminance,
+        saturation,
+      };
+    });
+    const orderedLuminance = columns
+      .map((column) => column.luminance)
+      .sort((a, b) => a - b);
+    const medianLuminance =
+      orderedLuminance[Math.floor(orderedLuminance.length / 2)] ?? 0;
+    const highlightThreshold = Math.max(72, medianLuminance * 1.18);
+    const isPaleHighlight = (index: number) => {
+      const column = columns[index];
+      return Boolean(
+        column &&
+        column.luminance > highlightThreshold &&
+        column.saturation < 0.6,
+      );
+    };
+    const stops = columns.map((column, x) => {
+      let corrected = column;
+      if (isPaleHighlight(x)) {
+        let left = x - 1;
+        let right = x + 1;
+        while (left >= 0 && isPaleHighlight(left)) left -= 1;
+        while (right < columns.length && isPaleHighlight(right)) right += 1;
+        const leftColumn = columns[left];
+        const rightColumn = columns[right];
+
+        if (leftColumn && rightColumn) {
+          const mix = (x - left) / (right - left);
+          corrected = {
+            ...column,
+            red: leftColumn.red + (rightColumn.red - leftColumn.red) * mix,
+            green:
+              leftColumn.green + (rightColumn.green - leftColumn.green) * mix,
+            blue: leftColumn.blue + (rightColumn.blue - leftColumn.blue) * mix,
+          };
+        } else {
+          corrected = leftColumn ?? rightColumn ?? column;
+        }
+      }
+
       const position = Math.round((x / (sampleWidth - 1)) * 100);
-      return `rgb(${Math.round(averageRed * neutralHighlightScale)} ${Math.round(averageGreen * neutralHighlightScale)} ${Math.round(averageBlue * neutralHighlightScale)}) ${position}%`;
+      return `rgb(${Math.round(corrected.red)} ${Math.round(corrected.green)} ${Math.round(corrected.blue)}) ${position}%`;
     });
 
     return `linear-gradient(90deg, ${stops.join(", ")})`;
