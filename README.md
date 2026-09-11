@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/brand/pinvites-square.png" alt="Pinvites" width="128" />
+</p>
+
 # Pinvites
 
 Pinvites is a self-hosted invitation and RSVP application for multiple events. It keeps households, RSVP submissions, and actual attendees separate so the primary dashboard number answers the useful question: how many people are coming?
