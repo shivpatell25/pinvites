@@ -181,31 +181,42 @@ function Artwork({
   }
 
   return (
-    <>
-      <Image
-        src={event.artworkUrl}
-        alt={`Artwork for ${event.title}`}
-        fill
-        sizes="(min-width: 980px) 56vw, 100vw"
-        className={styles.heroArtwork}
-        priority
-        unoptimized
-        onLoad={(image) => {
-          const accent = artworkAccent(image.currentTarget);
-          if (accent) onAccent(accent);
-        }}
-        onError={() => setFailed(true)}
-      />
-      <Image
-        src={event.artworkUrl}
-        alt=""
-        aria-hidden="true"
-        fill
-        sizes="(max-width: 639px) 100vw, 1px"
-        className={styles.heroArtworkBlur}
-        unoptimized
-      />
-    </>
+    <Image
+      src={event.artworkUrl}
+      alt={`Artwork for ${event.title}`}
+      fill
+      sizes="(min-width: 980px) 56vw, 100vw"
+      className={styles.heroArtwork}
+      priority
+      unoptimized
+      onLoad={(image) => {
+        const accent = artworkAccent(image.currentTarget);
+        if (accent) onAccent(accent);
+      }}
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
+function ArtworkExtension({ event }: { event: PublicEvent }) {
+  const [failed, setFailed] = useState(false);
+
+  if (!event.artworkUrl || failed) return null;
+
+  return (
+    <div className={styles.heroColorExtension} aria-hidden="true">
+      <div className={styles.heroColorExtensionCanvas}>
+        <Image
+          src={event.artworkUrl}
+          alt=""
+          fill
+          sizes="(max-width: 639px) 116vw, 1px"
+          className={styles.heroColorExtensionArtwork}
+          unoptimized
+          onError={() => setFailed(true)}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -315,6 +326,7 @@ export function InvitationExperience({
         </header>
 
         <main className={styles.main} id="invitation-details">
+          <ArtworkExtension event={event} />
           <div className={styles.content}>
             <PinvitesBrand reversed className={styles.contentBrand} priority />
             <section

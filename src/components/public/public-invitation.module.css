@@ -81,7 +81,7 @@
   animation: settleArtwork 1600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-.heroArtworkBlur {
+.heroColorExtension {
   display: none;
 }
 
@@ -1134,6 +1134,10 @@
   }
 
   .shell {
+    --mobile-hero-height: max(
+      68svh,
+      calc(100dvh - 150px - env(safe-area-inset-bottom))
+    );
     position: relative;
     display: flex;
     height: 100svh;
@@ -1154,77 +1158,7 @@
   }
 
   .hero {
-    min-height: max(68svh, calc(100dvh - 150px - env(safe-area-inset-bottom)));
-  }
-
-  .heroArtwork {
-    z-index: -4;
-  }
-
-  .heroArtworkBlur {
-    z-index: -3;
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    filter: blur(22px) saturate(96%);
-    opacity: 0.98;
-    transform: scale(1.09);
-    -webkit-mask-image: linear-gradient(
-      to bottom,
-      transparent 48%,
-      rgba(0, 0, 0, 0.12) 58%,
-      rgba(0, 0, 0, 0.58) 73%,
-      #000 88%
-    );
-    mask-image: linear-gradient(
-      to bottom,
-      transparent 48%,
-      rgba(0, 0, 0, 0.12) 58%,
-      rgba(0, 0, 0, 0.58) 73%,
-      #000 88%
-    );
-    pointer-events: none;
-  }
-
-  .hero::after {
-    position: absolute;
-    z-index: -1;
-    right: 0;
-    bottom: -1px;
-    left: 0;
-    height: 176px;
-    background:
-      radial-gradient(
-        circle at 100% 100%,
-        rgba(10, 132, 255, 0.08),
-        transparent 28rem
-      ),
-      linear-gradient(
-        180deg,
-        transparent 0%,
-        color-mix(in srgb, var(--paper) 12%, transparent) 18%,
-        color-mix(in srgb, var(--paper) 52%, transparent) 58%,
-        color-mix(in srgb, var(--paper) 88%, transparent) 86%,
-        var(--paper) 100%
-      );
-    -webkit-backdrop-filter: blur(7px) saturate(104%);
-    backdrop-filter: blur(7px) saturate(104%);
-    -webkit-mask-image: linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgba(0, 0, 0, 0.35) 22%,
-      #000 62%
-    );
-    mask-image: linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgba(0, 0, 0, 0.35) 22%,
-      #000 62%
-    );
-    pointer-events: none;
-    content: "";
+    min-height: var(--mobile-hero-height);
   }
 
   .heroScrim {
@@ -1232,8 +1166,8 @@
       linear-gradient(180deg, rgba(7, 9, 12, 0.48), transparent 28%),
       linear-gradient(
         0deg,
-        rgba(7, 9, 12, 0.94),
-        rgba(7, 9, 12, 0.38) 62%,
+        rgba(7, 9, 12, 0.58),
+        rgba(7, 9, 12, 0.24) 62%,
         transparent 86%
       );
   }
@@ -1292,6 +1226,62 @@
 
   .main::before {
     content: none;
+  }
+
+  .heroColorExtension {
+    position: absolute;
+    z-index: 1;
+    top: -1px;
+    right: 0;
+    left: 0;
+    display: block;
+    height: 164px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      rgba(0, 0, 0, 0.78) 32%,
+      rgba(0, 0, 0, 0.24) 68%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      rgba(0, 0, 0, 0.78) 32%,
+      rgba(0, 0, 0, 0.24) 68%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  .heroColorExtension::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(7, 9, 12, 0.58),
+      rgba(9, 9, 11, 0.72) 56%,
+      rgba(9, 9, 11, 0.92) 84%,
+      var(--paper)
+    );
+    content: "";
+  }
+
+  .heroColorExtensionCanvas {
+    position: absolute;
+    top: -26px;
+    right: -8%;
+    left: -8%;
+    height: var(--mobile-hero-height);
+    filter: blur(22px) saturate(104%);
+    opacity: 0.94;
+    transform: scaleY(-1);
+    transform-origin: center;
+  }
+
+  .heroColorExtensionArtwork {
+    object-fit: cover;
+    object-position: center;
   }
 
   .content {
