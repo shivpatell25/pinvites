@@ -181,20 +181,31 @@ function Artwork({
   }
 
   return (
-    <Image
-      src={event.artworkUrl}
-      alt={`Artwork for ${event.title}`}
-      fill
-      sizes="(min-width: 980px) 56vw, 100vw"
-      className={styles.heroArtwork}
-      priority
-      unoptimized
-      onLoad={(image) => {
-        const accent = artworkAccent(image.currentTarget);
-        if (accent) onAccent(accent);
-      }}
-      onError={() => setFailed(true)}
-    />
+    <>
+      <Image
+        src={event.artworkUrl}
+        alt={`Artwork for ${event.title}`}
+        fill
+        sizes="(min-width: 980px) 56vw, 100vw"
+        className={styles.heroArtwork}
+        priority
+        unoptimized
+        onLoad={(image) => {
+          const accent = artworkAccent(image.currentTarget);
+          if (accent) onAccent(accent);
+        }}
+        onError={() => setFailed(true)}
+      />
+      <Image
+        src={event.artworkUrl}
+        alt=""
+        aria-hidden="true"
+        fill
+        sizes="(max-width: 639px) 100vw, 1px"
+        className={styles.heroArtworkBlur}
+        unoptimized
+      />
+    </>
   );
 }
 
