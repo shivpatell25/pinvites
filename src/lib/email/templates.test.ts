@@ -19,12 +19,11 @@ describe("email templates", () => {
     expect(rendered.html).not.toContain("<script>alert(1)</script>");
     expect(rendered.html).toContain("@media only screen");
     expect(rendered.html).toContain("#0a84ff");
-    expect(rendered.html).toContain(
-      "https://raw.githubusercontent.com/shivpatell25/pinvites/18d9132/public/brand/hotlink-ok/pinvites-mark-email.png",
-    );
-    expect(rendered.html).toContain(
-      "https://raw.githubusercontent.com/shivpatell25/pinvites/18d9132/public/brand/hotlink-ok/pinvites-wordmark-email.png",
-    );
+    expect(rendered.html).toContain('aria-label="Pinvites compact mark"');
+    expect(rendered.html).toContain('aria-label="Pinvites wordmark"');
+    expect(rendered.html).not.toContain("raw.githubusercontent.com");
+    expect(rendered.html).not.toContain("cid:");
+    expect(rendered.html).not.toContain("<img");
     expect(rendered.text).toContain(
       "https://invites.example.test/i/private-token",
     );

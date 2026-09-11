@@ -55,8 +55,6 @@ interface LayoutInput extends EventEmailDetails {
 }
 
 const BRAND = "Pinvites";
-const EMAIL_BRAND_ASSET_ROOT =
-  "https://raw.githubusercontent.com/shivpatell25/pinvites/18d9132/public/brand/hotlink-ok";
 
 export function createInvitationEmail(
   input: InvitationEmailInput,
@@ -216,11 +214,6 @@ function renderLayout(
 ): Pick<RenderedEmail, "html" | "text"> {
   const actionUrl = safeWebUrl(input.actionUrl);
   const artworkUrl = input.artworkUrl ? safeWebUrl(input.artworkUrl) : null;
-  // Email image proxies can be blocked by self-hosted reverse-proxy or bot
-  // rules. These immutable, public assets live in Pinvites' own repository and
-  // do not depend on the deployment's Cloudflare configuration.
-  const brandMarkUrl = `${EMAIL_BRAND_ASSET_ROOT}/pinvites-mark-email.png`;
-  const brandWordmarkUrl = `${EMAIL_BRAND_ASSET_ROOT}/pinvites-wordmark-email.png`;
   const details = [input.dateLine, input.venueLine].filter(isPresent);
   const detailsHtml = details
     .map(
@@ -250,8 +243,8 @@ function renderLayout(
       .hero { padding: 26px 24px 36px !important; }
       .content { padding: 34px 24px 30px !important; }
       .headline { font-size: 44px !important; line-height: .96 !important; }
-      .brand-mark { width: 58px !important; height: 58px !important; }
-      .brand-wordmark { width: 112px !important; }
+      .brand-mark-type { font-size: 30px !important; }
+      .brand-wordmark-type { font-size: 30px !important; }
       .button-cell { display: block !important; }
       .button-link { display: block !important; text-align: center !important; }
     }
@@ -270,7 +263,7 @@ function renderLayout(
                 <tr>
                   <td valign="middle" style="color:#8e8e93;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;">${escapeHtml(input.eyebrow)}</td>
                   <td align="right" valign="middle">
-                    <img class="brand-mark" src="${escapeHtml(brandMarkUrl)}" width="68" height="68" alt="Pinvites" style="display:block;width:68px;height:68px;margin-left:auto;border:0;" />
+                    <span role="img" aria-label="Pinvites compact mark" style="display:inline-block;color:#8e8e93;font-family:Georgia,'Times New Roman',serif;font-size:13px;line-height:1;vertical-align:top;">&#10022;</span><span class="brand-mark-type" style="display:inline-block;margin-left:4px;color:#f5f5f7;font-family:Didot,'Bodoni 72',Georgia,'Times New Roman',serif;font-size:34px;font-style:italic;font-weight:700;letter-spacing:-.09em;line-height:1;">pi</span>
                   </td>
                 </tr>
               </table>
@@ -295,7 +288,7 @@ function renderLayout(
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:38px;border-top:1px solid #38383a;">
                 <tr>
                   <td style="padding-top:24px;">
-                    <img class="brand-wordmark" src="${escapeHtml(brandWordmarkUrl)}" width="126" alt="Pinvites" style="display:block;width:126px;max-width:126px;height:auto;border:0;" />
+                    <span class="brand-wordmark-type" role="img" aria-label="Pinvites wordmark" style="display:inline-block;color:#f5f5f7;font-family:Didot,'Bodoni 72',Georgia,'Times New Roman',serif;font-size:34px;font-style:italic;font-weight:700;letter-spacing:-.075em;line-height:1;">pinvites</span>
                   </td>
                   <td align="right" valign="bottom" style="padding-top:24px;color:#636366;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;">Invitations, beautifully considered.</td>
                 </tr>
