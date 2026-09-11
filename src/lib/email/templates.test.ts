@@ -20,10 +20,10 @@ describe("email templates", () => {
     expect(rendered.html).toContain("@media only screen");
     expect(rendered.html).toContain("#0a84ff");
     expect(rendered.html).toContain(
-      "https://invites.example.test/brand/hotlink-ok/pinvites-mark-email.png?v=3",
+      "https://raw.githubusercontent.com/shivpatell25/pinvites/18d9132/public/brand/hotlink-ok/pinvites-mark-email.png",
     );
     expect(rendered.html).toContain(
-      "https://invites.example.test/brand/hotlink-ok/pinvites-wordmark-email.png?v=3",
+      "https://raw.githubusercontent.com/shivpatell25/pinvites/18d9132/public/brand/hotlink-ok/pinvites-wordmark-email.png",
     );
     expect(rendered.text).toContain(
       "https://invites.example.test/i/private-token",

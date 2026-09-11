@@ -55,6 +55,8 @@ interface LayoutInput extends EventEmailDetails {
 }
 
 const BRAND = "Pinvites";
+const EMAIL_BRAND_ASSET_ROOT =
+  "https://raw.githubusercontent.com/shivpatell25/pinvites/18d9132/public/brand/hotlink-ok";
 
 export function createInvitationEmail(
   input: InvitationEmailInput,
@@ -214,14 +216,11 @@ function renderLayout(
 ): Pick<RenderedEmail, "html" | "text"> {
   const actionUrl = safeWebUrl(input.actionUrl);
   const artworkUrl = input.artworkUrl ? safeWebUrl(input.artworkUrl) : null;
-  const brandMarkUrl = new URL(
-    "/brand/hotlink-ok/pinvites-mark-email.png?v=3",
-    actionUrl,
-  ).toString();
-  const brandWordmarkUrl = new URL(
-    "/brand/hotlink-ok/pinvites-wordmark-email.png?v=3",
-    actionUrl,
-  ).toString();
+  // Email image proxies can be blocked by self-hosted reverse-proxy or bot
+  // rules. These immutable, public assets live in Pinvites' own repository and
+  // do not depend on the deployment's Cloudflare configuration.
+  const brandMarkUrl = `${EMAIL_BRAND_ASSET_ROOT}/pinvites-mark-email.png`;
+  const brandWordmarkUrl = `${EMAIL_BRAND_ASSET_ROOT}/pinvites-wordmark-email.png`;
   const details = [input.dateLine, input.venueLine].filter(isPresent);
   const detailsHtml = details
     .map(
