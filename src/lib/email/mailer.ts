@@ -39,18 +39,27 @@ async function loadInlineBrandAttachments() {
   ]);
   return [
     {
-      filename: "pinvites-mark.png",
+      // A named related MIME part is rendered as a downloadable attachment by
+      // Gmail (and adds a paperclip to the message). Omitting the filename keeps
+      // this as body content while the CID still makes it available to the HTML.
+      filename: false,
       content: mark,
       contentType: "image/png",
       contentDisposition: "inline",
       cid: "pinvites-mark@pinvites",
+      headers: {
+        "X-Attachment-Id": "pinvites-mark@pinvites",
+      },
     },
     {
-      filename: "pinvites-wordmark.png",
+      filename: false,
       content: wordmark,
       contentType: "image/png",
       contentDisposition: "inline",
       cid: "pinvites-wordmark@pinvites",
+      headers: {
+        "X-Attachment-Id": "pinvites-wordmark@pinvites",
+      },
     },
   ] as const;
 }
