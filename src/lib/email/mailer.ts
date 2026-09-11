@@ -1,6 +1,3 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-
 import nodemailer from "nodemailer";
 import { z } from "zod";
 
@@ -25,48 +22,6 @@ interface MailTransport {
   verify(): Promise<unknown>;
   sendMail(options: Readonly<Record<string, unknown>>): Promise<ProviderResult>;
   close(): void;
-}
-
-let inlineBrandAttachmentsPromise: ReturnType<
-  typeof loadInlineBrandAttachments
-> | null = null;
-
-async function loadInlineBrandAttachments() {
-  const brandDirectory = path.resolve(process.cwd(), "public/brand/hotlink-ok");
-  const [mark, wordmark] = await Promise.all([
-    readFile(path.resolve(brandDirectory, "pinvites-mark-email.png")),
-    readFile(path.resolve(brandDirectory, "pinvites-wordmark-email.png")),
-  ]);
-  return [
-    {
-      // A named related MIME part is rendered as a downloadable attachment by
-      // Gmail (and adds a paperclip to the message). Omitting the filename keeps
-      // this as body content while the CID still makes it available to the HTML.
-      filename: false,
-      content: mark,
-      contentType: "image/png",
-      contentDisposition: "inline",
-      cid: "pinvites-mark@pinvites",
-      headers: {
-        "X-Attachment-Id": "pinvites-mark@pinvites",
-      },
-    },
-    {
-      filename: false,
-      content: wordmark,
-      contentType: "image/png",
-      contentDisposition: "inline",
-      cid: "pinvites-wordmark@pinvites",
-      headers: {
-        "X-Attachment-Id": "pinvites-wordmark@pinvites",
-      },
-    },
-  ] as const;
-}
-
-function inlineBrandAttachments() {
-  inlineBrandAttachmentsPromise ??= loadInlineBrandAttachments();
-  return inlineBrandAttachmentsPromise;
 }
 
 const optionalTrimmedString = z.preprocess(
@@ -276,7 +231,6 @@ export class SmtpMailer {
 
     let providerResult: ProviderResult;
     try {
-      const attachments = await inlineBrandAttachments();
       providerResult = await this.transport.sendMail({
         from: this.configuration.from,
         replyTo: this.configuration.replyTo,
@@ -284,7 +238,6 @@ export class SmtpMailer {
         subject: message.email.subject,
         html: message.email.html,
         text: message.email.text,
-        attachments,
         headers: {
           "X-Pinvites-Delivery-Key": message.deliveryKey,
         },

@@ -89,29 +89,12 @@ describe("SMTP mailer", () => {
       expect.objectContaining({
         to: "guest@example.test",
         subject: "You’re invited",
-        attachments: expect.arrayContaining([
-          expect.objectContaining({
-            cid: "pinvites-mark@pinvites",
-            filename: false,
-            contentType: "image/png",
-            contentDisposition: "inline",
-            headers: {
-              "X-Attachment-Id": "pinvites-mark@pinvites",
-            },
-          }),
-          expect.objectContaining({
-            cid: "pinvites-wordmark@pinvites",
-            filename: false,
-            contentType: "image/png",
-            contentDisposition: "inline",
-            headers: {
-              "X-Attachment-Id": "pinvites-wordmark@pinvites",
-            },
-          }),
-        ]),
         disableFileAccess: true,
         disableUrlAccess: true,
       }),
+    );
+    expect(transport.sendMail.mock.calls[0]?.[0]).not.toHaveProperty(
+      "attachments",
     );
     expect(ledger.sent?.accepted).toContain("guest@example.test");
     expect(ledger.failed).toBeNull();
