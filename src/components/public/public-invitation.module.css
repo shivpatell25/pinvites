@@ -627,6 +627,16 @@
   line-height: 1.55;
 }
 
+.declineContactHint {
+  max-width: 32rem;
+  margin: 34px 0 -12px;
+  padding-top: 24px;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
 .responseGrid {
   display: grid;
   gap: 10px;

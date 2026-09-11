@@ -201,6 +201,15 @@ function validateAnswer(
 }
 
 function validateQuestions(event: ActionEvent, payload: ParsedPayload) {
+  if (payload.response === "NO") {
+    if (payload.answers.length > 0) {
+      throw new PublicRsvpError(
+        "Event questions cannot be submitted with a No response.",
+      );
+    }
+    return;
+  }
+
   const questions = new Map(
     event.questions.map((question) => [question.id, question]),
   );
@@ -219,11 +228,6 @@ function validateQuestions(event: ActionEvent, payload: ParsedPayload) {
     if (question.scope === "ATTENDEE" && !attendeeKeys.has(answer.subjectKey)) {
       throw new PublicRsvpError("An attendee answer has an invalid recipient.");
     }
-    if (question.scope === "ATTENDEE" && payload.response === "NO") {
-      throw new PublicRsvpError(
-        "Attendee answers cannot be submitted with a No response.",
-      );
-    }
     validateAnswer(question, answer.value);
   }
 
@@ -231,9 +235,7 @@ function validateQuestions(event: ActionEvent, payload: ParsedPayload) {
     const subjectKeys =
       question.scope === "HOUSEHOLD"
         ? ["household"]
-        : payload.response === "NO"
-          ? []
-          : payload.attendees.map((attendee) => attendee.key);
+        : payload.attendees.map((attendee) => attendee.key);
     for (const subjectKey of subjectKeys) {
       if (!isQuestionVisible(question, payload, subjectKey)) continue;
       const value = answerFor(payload, question.id, subjectKey);

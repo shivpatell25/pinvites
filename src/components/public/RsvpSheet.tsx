@@ -40,6 +40,7 @@ type StepId =
   | "attendees"
   | "questions"
   | "note"
+  | "decline"
   | "review";
 
 function newKey() {
@@ -63,7 +64,11 @@ function emptyAttendee(member?: {
 }
 
 function createInitialDraft(access: RsvpAccess): RsvpDraft {
-  if (access.initialRsvp) return access.initialRsvp;
+  if (access.initialRsvp) {
+    return access.initialRsvp.response === "NO"
+      ? { ...access.initialRsvp, attendees: [], answers: [] }
+      : access.initialRsvp;
+  }
 
   return {
     response: null,
@@ -137,11 +142,12 @@ function questionVisible(
   );
 }
 
-function stepsFor(
+export function stepsFor(
   event: PublicEvent,
   access: RsvpAccess,
   response: RsvpResponseValue | null,
 ): StepId[] {
+  if (response === "NO") return ["response", "decline"];
   const attending = response === "YES" || response === "MAYBE";
   const steps: StepId[] = ["response"];
   if (access.kind === "PUBLIC") steps.push("contact");
@@ -203,29 +209,27 @@ export function RsvpSheet({
     setDraft((current) => {
       const attendees =
         response === "NO"
-          ? current.attendees
+          ? []
           : current.attendees.length > 0
             ? current.attendees
-            : [emptyAttendee(access.members[0])];
-      const attendeeQuestionIds = new Set(
-        event.questions
-          .filter((question) => question.scope === "ATTENDEE")
-          .map((question) => question.id),
-      );
+            : access.members.length > 0
+              ? access.members
+                  .slice(0, access.partySizeLimit)
+                  .map((member) => emptyAttendee(member))
+              : [emptyAttendee()];
       return {
         ...current,
         response,
         attendees,
-        answers:
-          response === "NO"
-            ? current.answers.filter(
-                (answer) => !attendeeQuestionIds.has(answer.questionId),
-              )
-            : current.answers,
+        answers: response === "NO" ? [] : current.answers,
+        message: response === "NO" ? "" : current.message,
       };
     });
+    const responseSteps = stepsFor(event, access, response);
     setStepIndex((current) =>
-      Math.min(current, stepsFor(event, access, response).length - 1),
+      response === "NO"
+        ? responseSteps.indexOf("decline")
+        : Math.min(current, responseSteps.length - 1),
     );
     setLocalError(null);
   }
@@ -285,7 +289,10 @@ export function RsvpSheet({
   function validateCurrentStep() {
     if (step === "response" && !draft.response)
       return "Choose a response to continue.";
-    if (step === "contact") {
+    if (
+      step === "contact" ||
+      (step === "decline" && access.kind === "PUBLIC")
+    ) {
       if (!draft.contactName.trim()) return "Enter your name to continue.";
       if (!/^\S+@\S+\.\S+$/.test(draft.contactEmail))
         return "Enter a valid email address.";
@@ -339,6 +346,13 @@ export function RsvpSheet({
   function back() {
     setLocalError(null);
     setStepIndex((current) => Math.max(0, current - 1));
+  }
+
+  function validateSubmission(event: React.FormEvent<HTMLFormElement>) {
+    const error = validateCurrentStep();
+    if (!error) return;
+    event.preventDefault();
+    setLocalError(error);
   }
 
   function close() {
@@ -400,7 +414,11 @@ export function RsvpSheet({
         if (pending) event.preventDefault();
       }}
     >
-      <form action={formAction} className={styles.sheetForm}>
+      <form
+        action={formAction}
+        className={styles.sheetForm}
+        onSubmit={validateSubmission}
+      >
         <input type="hidden" name="eventId" value={event.id} />
         <input type="hidden" name="accessKind" value={access.kind} />
         <input type="hidden" name="accessToken" value={access.token ?? ""} />
@@ -492,6 +510,14 @@ export function RsvpSheet({
                 }
               />
             ) : null}
+            {step === "decline" ? (
+              <DeclineStep
+                event={event}
+                access={access}
+                draft={draft}
+                onChange={setDraft}
+              />
+            ) : null}
             {step === "review" ? (
               <ReviewStep draft={draft} event={event} />
             ) : null}
@@ -505,7 +531,7 @@ export function RsvpSheet({
         </div>
 
         <div className={styles.sheetFooter}>
-          {step === "review" ? (
+          {step === "review" || step === "decline" ? (
             <button
               type="submit"
               className={styles.primaryButton}
@@ -513,9 +539,13 @@ export function RsvpSheet({
             >
               {pending
                 ? "Sending…"
-                : access.initialRsvp
-                  ? "Save changes"
-                  : "Send RSVP"}
+                : step === "decline"
+                  ? access.initialRsvp
+                    ? "Save response"
+                    : "Send response"
+                  : access.initialRsvp
+                    ? "Save changes"
+                    : "Send RSVP"}
             </button>
           ) : (
             <button
@@ -630,37 +660,85 @@ function ContactStep({
         We’ll use this only for your RSVP and the private link that lets you
         make changes.
       </p>
-      <div className={styles.fieldGroup}>
-        <label className={styles.field}>
-          <span className={styles.label}>Your name</span>
-          <input
-            className={styles.input}
-            value={draft.contactName}
-            autoComplete="name"
-            enterKeyHint="next"
-            maxLength={120}
-            onChange={(event) =>
-              onChange({ ...draft, contactName: event.target.value })
-            }
-          />
-        </label>
-        <label className={styles.field}>
-          <span className={styles.label}>Email address</span>
-          <input
-            className={styles.input}
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            enterKeyHint="done"
-            maxLength={254}
-            value={draft.contactEmail}
-            onChange={(event) =>
-              onChange({ ...draft, contactEmail: event.target.value })
-            }
-          />
-        </label>
-      </div>
+      <ContactFields draft={draft} onChange={onChange} />
     </>
+  );
+}
+
+function DeclineStep({
+  event,
+  access,
+  draft,
+  onChange,
+}: {
+  event: PublicEvent;
+  access: RsvpAccess;
+  draft: RsvpDraft;
+  onChange: (draft: RsvpDraft) => void;
+}) {
+  return (
+    <>
+      <p className={styles.stepKicker}>Your reply</p>
+      <h2 className={styles.stepTitle} id="rsvp-step-title">
+        We’re sorry you can’t make it.
+      </h2>
+      <p className={styles.stepHint}>
+        We’ll miss seeing you at {event.title}. Thank you for letting{" "}
+        {event.hostName} know.
+      </p>
+      {access.kind === "PUBLIC" ? (
+        <>
+          <p className={styles.declineContactHint}>
+            Leave your name and email so we can save your reply and send your
+            private update link.
+          </p>
+          <ContactFields draft={draft} onChange={onChange} />
+        </>
+      ) : null}
+    </>
+  );
+}
+
+function ContactFields({
+  draft,
+  onChange,
+}: {
+  draft: RsvpDraft;
+  onChange: (draft: RsvpDraft) => void;
+}) {
+  return (
+    <div className={styles.fieldGroup}>
+      <label className={styles.field}>
+        <span className={styles.label}>Your name</span>
+        <input
+          className={styles.input}
+          value={draft.contactName}
+          autoComplete="name"
+          enterKeyHint="next"
+          maxLength={120}
+          required
+          onChange={(event) =>
+            onChange({ ...draft, contactName: event.target.value })
+          }
+        />
+      </label>
+      <label className={styles.field}>
+        <span className={styles.label}>Email address</span>
+        <input
+          className={styles.input}
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          enterKeyHint="done"
+          maxLength={254}
+          value={draft.contactEmail}
+          required
+          onChange={(event) =>
+            onChange({ ...draft, contactEmail: event.target.value })
+          }
+        />
+      </label>
+    </div>
   );
 }
 
