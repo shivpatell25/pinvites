@@ -109,7 +109,7 @@
 }
 
 .heroBar {
-  --hero-control-size: 56px;
+  --hero-control-size: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -132,15 +132,19 @@
 .heroMark {
   display: grid;
   overflow: hidden;
-  border-radius: 17px;
+  background: rgba(15, 13, 11, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 20px;
   place-items: center;
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  backdrop-filter: blur(12px) saturate(120%);
   filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.32));
 }
 
 .heroMarkImage {
   display: block;
-  width: 82px;
-  height: 82px;
+  width: 104px;
+  height: 104px;
   max-width: none;
   flex: none;
   object-fit: contain;
@@ -162,7 +166,7 @@
   display: inline-grid;
   padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 17px;
+  border-radius: 20px;
   color: inherit;
   background: rgba(15, 13, 11, 0.25);
   place-items: center;
@@ -1200,7 +1204,8 @@
   .sheetFooter {
     background: rgba(9, 9, 11, 0.98);
   }
-  .iconButton {
+  .iconButton,
+  .heroMark {
     background: rgba(15, 13, 11, 0.58);
   }
 }

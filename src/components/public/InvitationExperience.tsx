@@ -223,7 +223,7 @@ function ShareButton({ title, url }: { title: string; url: string }) {
       aria-label={copied ? "Invitation link copied" : "Share invitation"}
       title={copied ? "Copied" : "Share"}
     >
-      <Share2 size={22} strokeWidth={1.8} aria-hidden="true" />
+      <Share2 size={24} strokeWidth={1.8} aria-hidden="true" />
     </button>
   );
 }
