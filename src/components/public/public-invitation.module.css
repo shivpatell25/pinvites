@@ -130,6 +130,7 @@
 }
 
 .heroMark {
+  position: relative;
   display: grid;
   overflow: hidden;
   background: rgba(15, 13, 11, 0.25);
@@ -142,12 +143,17 @@
 }
 
 .heroMarkImage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   display: block;
-  width: 104px;
-  height: 104px;
+  width: 94px;
+  height: 94px;
   max-width: none;
   flex: none;
   object-fit: contain;
+  object-position: center;
+  transform: translate(-50%, -50%);
 }
 
 .contentBrand {
