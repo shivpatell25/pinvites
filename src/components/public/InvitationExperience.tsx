@@ -223,7 +223,7 @@ function ShareButton({ title, url }: { title: string; url: string }) {
       aria-label={copied ? "Invitation link copied" : "Share invitation"}
       title={copied ? "Copied" : "Share"}
     >
-      <Share2 size={19} strokeWidth={1.8} aria-hidden="true" />
+      <Share2 size={22} strokeWidth={1.8} aria-hidden="true" />
     </button>
   );
 }
@@ -272,7 +272,16 @@ export function InvitationExperience({
               title={event.title}
               url={`/e/${encodeURIComponent(event.slug)}`}
             />
-          ) : null}
+          ) : (
+            <span className={styles.heroControlSpacer} aria-hidden="true" />
+          )}
+          <span className={styles.heroMark}>
+            <PinvitesBrand
+              compact
+              className={styles.heroMarkImage}
+              priority
+            />
+          </span>
         </div>
         <div className={styles.heroCopy}>
           <p className={styles.host}>Hosted by {event.hostName}</p>

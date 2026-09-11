@@ -109,10 +109,41 @@
 }
 
 .heroBar {
+  --hero-control-size: 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: max(20px, env(safe-area-inset-top)) 20px 0;
+  padding: max(20px, env(safe-area-inset-top))
+    max(20px, env(safe-area-inset-right)) 0
+    max(20px, env(safe-area-inset-left));
+}
+
+.heroControlSpacer,
+.heroMark,
+.iconButton {
+  width: var(--hero-control-size);
+  height: var(--hero-control-size);
+}
+
+.heroControlSpacer {
+  display: block;
+}
+
+.heroMark {
+  display: grid;
+  overflow: hidden;
+  border-radius: 17px;
+  place-items: center;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.32));
+}
+
+.heroMarkImage {
+  display: block;
+  width: 82px;
+  height: 82px;
+  max-width: none;
+  flex: none;
+  object-fit: contain;
 }
 
 .contentBrand {
@@ -129,11 +160,9 @@
 
 .iconButton {
   display: inline-grid;
-  width: 46px;
-  height: 46px;
   padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 14px;
+  border-radius: 17px;
   color: inherit;
   background: rgba(15, 13, 11, 0.25);
   place-items: center;
