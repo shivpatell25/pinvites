@@ -89,6 +89,18 @@ describe("SMTP mailer", () => {
       expect.objectContaining({
         to: "guest@example.test",
         subject: "You’re invited",
+        attachments: expect.arrayContaining([
+          expect.objectContaining({
+            cid: "pinvites-mark@pinvites",
+            contentType: "image/png",
+            contentDisposition: "inline",
+          }),
+          expect.objectContaining({
+            cid: "pinvites-wordmark@pinvites",
+            contentType: "image/png",
+            contentDisposition: "inline",
+          }),
+        ]),
         disableFileAccess: true,
         disableUrlAccess: true,
       }),

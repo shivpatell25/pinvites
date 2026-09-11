@@ -214,14 +214,6 @@ function renderLayout(
 ): Pick<RenderedEmail, "html" | "text"> {
   const actionUrl = safeWebUrl(input.actionUrl);
   const artworkUrl = input.artworkUrl ? safeWebUrl(input.artworkUrl) : null;
-  const brandMarkUrl = new URL(
-    "/brand/hotlink-ok/pinvites-mark-email.png",
-    actionUrl,
-  ).toString();
-  const brandWordmarkUrl = new URL(
-    "/brand/hotlink-ok/pinvites-wordmark-email.png",
-    actionUrl,
-  ).toString();
   const details = [input.dateLine, input.venueLine].filter(isPresent);
   const detailsHtml = details
     .map(
@@ -271,7 +263,7 @@ function renderLayout(
                 <tr>
                   <td valign="middle" style="color:#8e8e93;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;">${escapeHtml(input.eyebrow)}</td>
                   <td align="right" valign="middle">
-                    <img class="brand-mark" src="${escapeHtml(brandMarkUrl)}" width="68" height="68" alt="Pinvites" style="display:block;width:68px;height:68px;margin-left:auto;border:0;" />
+                    <img class="brand-mark" src="cid:pinvites-mark@pinvites" width="68" height="68" alt="Pinvites" style="display:block;width:68px;height:68px;margin-left:auto;border:0;" />
                   </td>
                 </tr>
               </table>
@@ -296,7 +288,7 @@ function renderLayout(
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:38px;border-top:1px solid #38383a;">
                 <tr>
                   <td style="padding-top:24px;">
-                    <img class="brand-wordmark" src="${escapeHtml(brandWordmarkUrl)}" width="126" alt="Pinvites" style="display:block;width:126px;max-width:126px;height:auto;border:0;" />
+                    <img class="brand-wordmark" src="cid:pinvites-wordmark@pinvites" width="126" alt="Pinvites" style="display:block;width:126px;max-width:126px;height:auto;border:0;" />
                   </td>
                   <td align="right" valign="bottom" style="padding-top:24px;color:#636366;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;">Invitations, beautifully considered.</td>
                 </tr>

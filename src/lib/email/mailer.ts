@@ -1,3 +1,6 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+
 import nodemailer from "nodemailer";
 import { z } from "zod";
 
@@ -22,6 +25,39 @@ interface MailTransport {
   verify(): Promise<unknown>;
   sendMail(options: Readonly<Record<string, unknown>>): Promise<ProviderResult>;
   close(): void;
+}
+
+let inlineBrandAttachmentsPromise: ReturnType<
+  typeof loadInlineBrandAttachments
+> | null = null;
+
+async function loadInlineBrandAttachments() {
+  const brandDirectory = path.resolve(process.cwd(), "public/brand/hotlink-ok");
+  const [mark, wordmark] = await Promise.all([
+    readFile(path.resolve(brandDirectory, "pinvites-mark-email.png")),
+    readFile(path.resolve(brandDirectory, "pinvites-wordmark-email.png")),
+  ]);
+  return [
+    {
+      filename: "pinvites-mark.png",
+      content: mark,
+      contentType: "image/png",
+      contentDisposition: "inline",
+      cid: "pinvites-mark@pinvites",
+    },
+    {
+      filename: "pinvites-wordmark.png",
+      content: wordmark,
+      contentType: "image/png",
+      contentDisposition: "inline",
+      cid: "pinvites-wordmark@pinvites",
+    },
+  ] as const;
+}
+
+function inlineBrandAttachments() {
+  inlineBrandAttachmentsPromise ??= loadInlineBrandAttachments();
+  return inlineBrandAttachmentsPromise;
 }
 
 const optionalTrimmedString = z.preprocess(
@@ -231,6 +267,7 @@ export class SmtpMailer {
 
     let providerResult: ProviderResult;
     try {
+      const attachments = await inlineBrandAttachments();
       providerResult = await this.transport.sendMail({
         from: this.configuration.from,
         replyTo: this.configuration.replyTo,
@@ -238,6 +275,7 @@ export class SmtpMailer {
         subject: message.email.subject,
         html: message.email.html,
         text: message.email.text,
+        attachments,
         headers: {
           "X-Pinvites-Delivery-Key": message.deliveryKey,
         },
