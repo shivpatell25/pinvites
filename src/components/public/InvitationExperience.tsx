@@ -245,13 +245,13 @@ function artworkEdgeGradient(image: HTMLImageElement) {
       .sort((a, b) => a - b);
     const medianLuminance =
       orderedLuminance[Math.floor(orderedLuminance.length / 2)] ?? 0;
-    const highlightThreshold = Math.max(72, medianLuminance * 1.18);
+    const highlightThreshold = Math.max(78, medianLuminance * 1.1);
     const isPaleHighlight = (index: number) => {
       const column = columns[index];
       return Boolean(
         column &&
         column.luminance > highlightThreshold &&
-        column.saturation < 0.6,
+        column.saturation < 0.75,
       );
     };
     const stops = columns.map((column, x) => {
