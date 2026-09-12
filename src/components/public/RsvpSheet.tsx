@@ -31,6 +31,7 @@ type RsvpSheetProps = {
   action: RsvpAction;
   open: boolean;
   onClose: () => void;
+  onSubmitted?: (response: RsvpResponseValue) => void;
 };
 
 type StepId =
@@ -180,6 +181,7 @@ export function RsvpSheet({
   action,
   open,
   onClose,
+  onSubmitted,
 }: RsvpSheetProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [draft, setDraft] = useState<RsvpDraft>(() =>
@@ -197,6 +199,7 @@ export function RsvpSheet({
   );
   const activeStepIndex = Math.min(stepIndex, steps.length - 1);
   const step = steps[activeStepIndex] ?? "response";
+  const reportedSubmission = useRef(false);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -204,6 +207,18 @@ export function RsvpSheet({
     if (open && !dialog.open) dialog.showModal();
     if (!open && dialog.open) dialog.close();
   }, [actionState.status, open]);
+
+  useEffect(() => {
+    if (
+      actionState.status !== "SUCCESS" ||
+      !actionState.submittedResponse ||
+      reportedSubmission.current
+    ) {
+      return;
+    }
+    reportedSubmission.current = true;
+    onSubmitted?.(actionState.submittedResponse);
+  }, [actionState, onSubmitted]);
 
   function setResponse(response: RsvpResponseValue) {
     setDraft((current) => {
@@ -533,6 +548,7 @@ export function RsvpSheet({
         <div className={styles.sheetFooter}>
           {step === "review" || step === "decline" ? (
             <button
+              key="submit-response"
               type="submit"
               className={styles.primaryButton}
               disabled={pending}
@@ -549,9 +565,15 @@ export function RsvpSheet({
             </button>
           ) : (
             <button
+              key="continue-rsvp"
               type="button"
               className={styles.primaryButton}
-              onClick={next}
+              onClick={(event) => {
+                // Prevent the click's default action before React can replace
+                // this control with the review step's submit button.
+                event.preventDefault();
+                next();
+              }}
             >
               Continue
             </button>

@@ -2,12 +2,15 @@ import { ArrowRight, Mail, Users } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { EventUpdatesPanel } from "@/components/admin/event-updates-panel";
+import { LiveActivityFeed } from "@/components/admin/live-activity-feed";
 import { MetricCard } from "@/components/admin/metric-card";
 import { TrendChart } from "@/components/admin/trend-chart";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { requireEventPage } from "@/lib/admin-page";
 import { db } from "@/lib/db";
 import { formatPercent } from "@/lib/format";
+import { getGuestActivity } from "@/lib/guest-activity";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +29,19 @@ export default async function EventOverviewPage({
   await requireEventPage(eventId);
   const event = await db.event.findUnique({
     where: { id: eventId },
-    select: { id: true },
+    select: {
+      id: true,
+      updates: {
+        orderBy: [{ postedAt: "desc" }, { id: "desc" }],
+        take: 20,
+        select: {
+          id: true,
+          message: true,
+          isImportant: true,
+          postedAt: true,
+        },
+      },
+    },
   });
   if (!event) notFound();
   const fourteenDaysAgo = new Date();
@@ -44,6 +59,7 @@ export default async function EventOverviewPage({
     responded,
     recent,
     submissions,
+    activity,
   ] = await Promise.all([
     db.attendee.count({
       where: {
@@ -97,6 +113,7 @@ export default async function EventOverviewPage({
       select: { submittedAt: true, confirmedAttendeeCount: true },
       orderBy: { submittedAt: "asc" },
     }),
+    getGuestActivity(eventId),
   ]);
   const points = Array.from({ length: 14 }, (_, index) => {
     const date = new Date(fourteenDaysAgo);
@@ -165,6 +182,10 @@ export default async function EventOverviewPage({
             note="Invitation-link opens"
           />
         </div>
+      </section>
+      <section className="mt-12 grid gap-10 xl:grid-cols-2">
+        <EventUpdatesPanel eventId={eventId} updates={event.updates} />
+        <LiveActivityFeed eventId={eventId} initialItems={activity} />
       </section>
       <section className="mt-12 grid gap-10 xl:grid-cols-[1.25fr_0.75fr]">
         <div className="border-t border-[var(--line-strong)] pt-7">

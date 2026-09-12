@@ -4,19 +4,25 @@ import Image from "next/image";
 import {
   CalendarDays,
   ChevronDown,
+  CloudSun,
   Clock3,
   ExternalLink,
   LockKeyhole,
   MapPin,
+  Megaphone,
+  Navigation,
+  PackageOpen,
   Share2,
+  Shirt,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 
 import { PinvitesBrand } from "./PinvitesBrand";
 import { RsvpSheet } from "./RsvpSheet";
 import styles from "./public-invitation.module.css";
 import type { PublicEvent, RsvpAccess, RsvpAction } from "./types";
+import { getEventTiming, type EventTiming } from "@/lib/event-timing";
 
 type InvitationExperienceProps = {
   event: PublicEvent;
@@ -87,6 +93,155 @@ function deadlineLabel(deadline: string, timezone: string) {
     day: "numeric",
     year: "numeric",
   }).format(new Date(deadline));
+}
+
+function updateTime(value: string, timezone: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: timezone,
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+function LiveEventCard({
+  event,
+  timing,
+  directionsUrl,
+}: {
+  event: PublicEvent;
+  timing: EventTiming;
+  directionsUrl: string | null;
+}) {
+  const date = dateParts(event);
+  const latestUpdate = event.updates[0] ?? null;
+
+  return (
+    <section className={styles.liveCard} aria-labelledby="live-card-title">
+      <div className={styles.liveCardTopline}>
+        <p className={styles.liveCardKicker}>Your event card</p>
+        <span
+          className={`${styles.liveStatusDot} ${timing.phase === "LIVE" ? styles.liveStatusDotActive : ""}`}
+          aria-hidden="true"
+        />
+      </div>
+      <h2 className={styles.liveCardCountdown} id="live-card-title">
+        {timing.label}
+      </h2>
+      <p className={styles.liveCardDate}>
+        {date.longDate}
+        {!event.isAllDay ? ` · ${date.time}` : " · All day"}
+      </p>
+
+      {event.venueName || event.venueAddress ? (
+        <div className={styles.liveCardLocation}>
+          <MapPin size={18} strokeWidth={1.8} aria-hidden="true" />
+          <div>
+            {event.venueName ? <strong>{event.venueName}</strong> : null}
+            {event.venueAddress ? <span>{event.venueAddress}</span> : null}
+          </div>
+          {directionsUrl ? (
+            <a
+              href={directionsUrl}
+              target="_blank"
+              rel="noreferrer"
+              className={styles.liveDirections}
+            >
+              <Navigation size={15} strokeWidth={1.9} aria-hidden="true" />
+              Directions
+            </a>
+          ) : null}
+        </div>
+      ) : null}
+
+      {latestUpdate ? (
+        <div className={styles.liveLatestUpdate}>
+          <Megaphone size={17} strokeWidth={1.8} aria-hidden="true" />
+          <div>
+            <span>Latest from the host</span>
+            <p>{latestUpdate.message}</p>
+          </div>
+        </div>
+      ) : null}
+
+      <dl className={styles.liveDetails}>
+        {event.dressCode ? (
+          <div>
+            <Shirt size={17} strokeWidth={1.7} aria-hidden="true" />
+            <dt>Dress</dt>
+            <dd>{event.dressCode}</dd>
+          </div>
+        ) : null}
+        {event.whatToBring ? (
+          <div>
+            <PackageOpen size={17} strokeWidth={1.7} aria-hidden="true" />
+            <dt>Bring</dt>
+            <dd>{event.whatToBring}</dd>
+          </div>
+        ) : null}
+        {event.weather ? (
+          <div>
+            <CloudSun size={17} strokeWidth={1.7} aria-hidden="true" />
+            <dt>Forecast</dt>
+            <dd>
+              {event.weather.temperature}°F · {event.weather.summary}
+              {event.weather.precipitationProbability !== null
+                ? ` · ${event.weather.precipitationProbability}% rain`
+                : ""}
+            </dd>
+          </div>
+        ) : null}
+        {timing.isEventDay && event.arrivalInstructions ? (
+          <div className={styles.liveDetailWide}>
+            <Navigation size={17} strokeWidth={1.7} aria-hidden="true" />
+            <dt>Arrival</dt>
+            <dd>{event.arrivalInstructions}</dd>
+          </div>
+        ) : null}
+      </dl>
+      {event.weather ? (
+        <a
+          className={styles.weatherCredit}
+          href="https://open-meteo.com/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Weather by Open-Meteo
+        </a>
+      ) : null}
+    </section>
+  );
+}
+
+function HostUpdatesTimeline({ event }: { event: PublicEvent }) {
+  if (!event.updates.length) return null;
+  const featuredId = event.updates.find((update) => update.isImportant)?.id;
+  return (
+    <section className={styles.updatesTimeline} aria-labelledby="updates-title">
+      <p className={styles.eyebrow}>From your host</p>
+      <h2 className={styles.sectionTitle} id="updates-title">
+        Event updates.
+      </h2>
+      <ol className={styles.updateList}>
+        {event.updates.map((update) => (
+          <li
+            key={update.id}
+            className={`${styles.updateItem} ${update.id === featuredId ? styles.updateItemFeatured : ""}`}
+          >
+            <span className={styles.updateMarker} aria-hidden="true" />
+            <div>
+              <time dateTime={update.postedAt}>
+                {updateTime(update.postedAt, event.timezone)}
+              </time>
+              {update.id === featuredId ? <em>Important</em> : null}
+              <p>{update.message}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
 }
 
 function googleCalendarUrl(event: PublicEvent) {
@@ -372,8 +527,18 @@ export function InvitationExperience({
   const [artworkAccent, setArtworkAccent] = useState<string | null>(null);
   const [artworkEdge, setArtworkEdge] = useState<string | null>(null);
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [currentResponse, setCurrentResponse] = useState(
+    access.currentResponse ?? access.initialRsvp?.response ?? null,
+  );
+  const [now, setNow] = useState(() => Date.now());
   const date = useMemo(() => dateParts(event), [event]);
-  const existing = access.initialRsvp?.response;
+  const existing = currentResponse;
+  const timing = useMemo(
+    () => getEventTiming(event, new Date(now)),
+    [event, now],
+  );
+  const eventDayMode = timing.isEventDay || timing.phase === "LIVE";
+  const latestUpdate = event.updates[0] ?? null;
   const mapUrl =
     event.venueUrl ??
     (event.venueAddress
@@ -384,6 +549,11 @@ export function InvitationExperience({
     : "You’re invited.";
 
   const accent = artworkAccent ?? event.primaryColor ?? "#0a84ff";
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 30_000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   return (
     <div
@@ -441,13 +611,50 @@ export function InvitationExperience({
             {event.subtitle ? (
               <p className={styles.subtitle}>{event.subtitle}</p>
             ) : null}
-            <p className={styles.heroDate}>{date.longDate}</p>
+            <p className={styles.heroDate} suppressHydrationWarning>
+              {eventDayMode ? timing.label : date.longDate}
+            </p>
+            {eventDayMode ? (
+              <div className={styles.eventDayPractical}>
+                {event.venueName || event.venueAddress ? (
+                  <div className={styles.eventDayLocation}>
+                    <MapPin size={17} strokeWidth={1.8} aria-hidden="true" />
+                    <span>
+                      {event.venueName ?? event.venueAddress}
+                      {event.venueName && event.venueAddress
+                        ? ` · ${event.venueAddress}`
+                        : ""}
+                    </span>
+                    {mapUrl ? (
+                      <a href={mapUrl} target="_blank" rel="noreferrer">
+                        Directions
+                      </a>
+                    ) : null}
+                  </div>
+                ) : null}
+                {event.arrivalInstructions ? (
+                  <p>{event.arrivalInstructions}</p>
+                ) : null}
+                {latestUpdate ? (
+                  <p className={styles.eventDayUpdate}>
+                    <strong>Latest update</strong> {latestUpdate.message}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </header>
 
         <main className={styles.main} id="invitation-details">
           <div className={styles.content}>
             <PinvitesBrand reversed className={styles.contentBrand} priority />
+            {existing === "YES" ? (
+              <LiveEventCard
+                event={event}
+                timing={timing}
+                directionsUrl={mapUrl}
+              />
+            ) : null}
             <section
               className={styles.personalGreeting}
               aria-labelledby="greeting-title"
@@ -552,6 +759,8 @@ export function InvitationExperience({
               </section>
             ) : null}
 
+            <HostUpdatesTimeline event={event} />
+
             {event.rsvpDeadline ? (
               <p className={styles.deadline}>
                 <Clock3 size={17} strokeWidth={1.8} aria-hidden="true" />
@@ -618,6 +827,7 @@ export function InvitationExperience({
         action={submitAction}
         open={rsvpOpen}
         onClose={() => setRsvpOpen(false)}
+        onSubmitted={setCurrentResponse}
       />
     </div>
   );

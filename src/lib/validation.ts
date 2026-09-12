@@ -7,6 +7,14 @@ const optionalTrimmed = (max: number) =>
     .max(max)
     .transform((value) => (value === "" ? null : value));
 
+const optionalNewText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .nullish()
+    .transform((value) => (!value ? null : value));
+
 const optionalUrl = z
   .string()
   .trim()
@@ -27,6 +35,13 @@ const optionalDate = z.preprocess(
     value === "" || value === null || value === undefined ? null : value,
   z.union([z.null(), z.coerce.date()]),
 );
+
+const optionalCoordinate = (minimum: number, maximum: number) =>
+  z.preprocess(
+    (value) =>
+      value === "" || value === null || value === undefined ? null : value,
+    z.union([z.null(), z.coerce.number().min(minimum).max(maximum)]),
+  );
 
 export const eventInputSchema = z
   .object({
@@ -56,7 +71,11 @@ export const eventInputSchema = z
     venueName: optionalTrimmed(200),
     venueAddress: optionalTrimmed(2_000),
     venueUrl: optionalUrl,
+    latitude: optionalCoordinate(-90, 90),
+    longitude: optionalCoordinate(-180, 180),
     dressCode: optionalTrimmed(160),
+    whatToBring: optionalNewText(2_000),
+    arrivalInstructions: optionalNewText(4_000),
     primaryColor: z
       .string()
       .trim()

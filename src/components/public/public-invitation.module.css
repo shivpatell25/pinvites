@@ -256,6 +256,61 @@
   content: "";
 }
 
+.eventDayPractical {
+  display: grid;
+  max-width: 580px;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 16px 18px;
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(12, 12, 14, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  backdrop-filter: blur(18px) saturate(135%);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-shadow: none;
+}
+
+.eventDayPractical p {
+  margin: 0;
+}
+
+.eventDayLocation {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: center;
+  color: #fff;
+  font-weight: 650;
+}
+
+.eventDayLocation span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eventDayLocation a {
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.eventDayUpdate {
+  padding-top: 9px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.eventDayUpdate strong {
+  margin-right: 6px;
+  color: #fff;
+}
+
 .main {
   position: relative;
   background:
@@ -275,6 +330,194 @@
 
 .personalGreeting {
   margin-bottom: 52px;
+}
+
+.liveCard {
+  position: relative;
+  margin: 0 0 58px;
+  padding: 25px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 100% 0,
+      var(--event-accent-soft),
+      transparent 48%
+    ),
+    var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.24);
+}
+
+.liveCardTopline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.liveCardKicker {
+  margin: 0;
+  color: var(--event-accent);
+  font-size: 0.67rem;
+  font-weight: 750;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.liveStatusDot {
+  width: 8px;
+  height: 8px;
+  background: var(--muted);
+  border-radius: 50%;
+  box-shadow: 0 0 0 5px rgba(142, 142, 147, 0.1);
+}
+
+.liveStatusDotActive {
+  background: #30d158;
+  box-shadow: 0 0 0 5px rgba(48, 209, 88, 0.12);
+  animation: livePulse 2.2s ease-in-out infinite;
+}
+
+.liveCardCountdown {
+  margin: 16px 0 0;
+  font-family:
+    "Instrument Serif",
+    Iowan Old Style,
+    Baskerville,
+    serif;
+  font-size: clamp(2.5rem, 10vw, 4.25rem);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  line-height: 0.94;
+}
+
+.liveCardDate {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.liveCardLocation {
+  display: grid;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.liveCardLocation > svg {
+  color: var(--event-accent);
+}
+
+.liveCardLocation strong,
+.liveCardLocation span {
+  display: block;
+}
+
+.liveCardLocation strong {
+  font-size: 0.88rem;
+}
+
+.liveCardLocation span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.liveDirections {
+  display: inline-flex;
+  min-height: 38px;
+  padding: 0 13px;
+  color: #fff;
+  background: var(--event-accent);
+  border-radius: 12px;
+  gap: 7px;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.liveLatestUpdate {
+  display: grid;
+  margin-top: 18px;
+  padding: 15px;
+  color: var(--ink);
+  background: var(--event-accent-soft);
+  border-radius: 15px;
+  grid-template-columns: auto 1fr;
+  gap: 11px;
+}
+
+.liveLatestUpdate > svg {
+  margin-top: 2px;
+  color: var(--event-accent);
+}
+
+.liveLatestUpdate span {
+  color: var(--event-accent);
+  font-size: 0.64rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.liveLatestUpdate p {
+  margin: 4px 0 0;
+  font-size: 0.82rem;
+  font-weight: 650;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.liveDetails {
+  display: grid;
+  margin: 18px 0 0;
+  border-top: 1px solid var(--line);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.liveDetails > div {
+  display: grid;
+  padding: 15px 10px 4px 0;
+  grid-template-columns: 24px 1fr;
+  column-gap: 7px;
+}
+
+.liveDetails svg {
+  color: var(--event-accent);
+  grid-row: 1 / 3;
+}
+
+.liveDetails dt {
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.liveDetails dd {
+  margin: 3px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.liveDetails .liveDetailWide {
+  grid-column: 1 / -1;
+}
+
+.weatherCredit {
+  display: inline-block;
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 0.62rem;
+  text-decoration: none;
 }
 
 .eyebrow {
@@ -408,6 +651,65 @@
 
 .editorialDetails {
   padding: 58px 0 18px;
+}
+
+.updatesTimeline {
+  padding: 58px 0 4px;
+}
+
+.updateList {
+  margin: 12px 0 0 5px;
+  padding: 0 0 0 23px;
+  border-left: 1px solid var(--line);
+  list-style: none;
+}
+
+.updateItem {
+  position: relative;
+  padding: 0 0 30px;
+}
+
+.updateItem:last-child {
+  padding-bottom: 0;
+}
+
+.updateMarker {
+  position: absolute;
+  top: 5px;
+  left: -28px;
+  width: 9px;
+  height: 9px;
+  background: var(--line-strong);
+  border: 2px solid var(--paper);
+  border-radius: 50%;
+}
+
+.updateItemFeatured .updateMarker {
+  background: var(--event-accent);
+  box-shadow: 0 0 0 4px var(--event-accent-soft);
+}
+
+.updateItem time,
+.updateItem em {
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.updateItem em {
+  margin-left: 10px;
+  color: var(--event-accent);
+}
+
+.updateItem p {
+  margin: 7px 0 0;
+  color: var(--ink);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
 }
 
 .sectionTitle {
@@ -1126,6 +1428,18 @@
   }
 }
 
+@keyframes livePulse {
+  0%,
+  100% {
+    opacity: 0.66;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
 @media (max-width: 639px) {
   :global(html):has(.shell),
   :global(body):has(.shell) {
@@ -1229,6 +1543,34 @@
     font-size: 0.82rem;
   }
 
+  .eventDayPractical {
+    gap: 8px;
+    margin-top: 14px;
+    padding: 12px 13px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+  }
+
+  .eventDayPractical > p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .eventDayLocation {
+    gap: 7px;
+  }
+
+  .eventDayLocation a {
+    min-height: 30px;
+    padding: 0 9px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.14);
+    display: inline-flex;
+    align-items: center;
+  }
+
   .main::before {
     content: none;
   }
@@ -1296,6 +1638,35 @@
   .contentBrand {
     width: 132px;
     margin-bottom: 30px;
+  }
+
+  .liveCard {
+    margin-bottom: 46px;
+    padding: 21px 18px;
+    border-radius: 21px;
+  }
+
+  .liveCardCountdown {
+    font-size: clamp(2.55rem, 13vw, 3.5rem);
+  }
+
+  .liveCardLocation {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .liveDirections {
+    min-height: 40px;
+    margin-top: 8px;
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .liveDetails {
+    grid-template-columns: 1fr;
+  }
+
+  .liveDetails > div {
+    padding-right: 0;
   }
 
   .personalGreeting {

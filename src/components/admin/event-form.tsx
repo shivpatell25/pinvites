@@ -21,7 +21,11 @@ export interface EventFormValues {
   venueName: string | null;
   venueAddress: string | null;
   venueUrl: string | null;
+  latitude: { toString(): string } | string | number | null;
+  longitude: { toString(): string } | string | number | null;
   dressCode: string | null;
+  whatToBring: string | null;
+  arrivalInstructions: string | null;
   primaryColor: string | null;
 }
 
@@ -44,7 +48,11 @@ const emptyEvent: EventFormValues = {
   venueName: "",
   venueAddress: "",
   venueUrl: "",
+  latitude: null,
+  longitude: null,
   dressCode: "",
+  whatToBring: "",
+  arrivalInstructions: "",
   primaryColor: "#c6472f",
 };
 
@@ -244,12 +252,65 @@ export function EventForm({
               />
             </FieldShell>
           </div>
+          <div className="sm:col-span-2">
+            <FieldShell
+              label="Arrival & parking"
+              htmlFor="arrivalInstructions"
+              optional
+              hint="Directions, entrances, parking, check-in, or access notes that matter on event day."
+            >
+              <Textarea
+                id="arrivalInstructions"
+                name="arrivalInstructions"
+                defaultValue={values.arrivalInstructions ?? ""}
+                maxLength={4_000}
+                rows={3}
+              />
+            </FieldShell>
+          </div>
           <FieldShell label="Dress code" htmlFor="dressCode" optional>
             <Input
               id="dressCode"
               name="dressCode"
               defaultValue={values.dressCode ?? ""}
               maxLength={160}
+            />
+          </FieldShell>
+          <FieldShell label="What to bring" htmlFor="whatToBring" optional>
+            <Input
+              id="whatToBring"
+              name="whatToBring"
+              defaultValue={values.whatToBring ?? ""}
+              maxLength={2_000}
+            />
+          </FieldShell>
+          <FieldShell
+            label="Latitude"
+            htmlFor="latitude"
+            optional
+            hint="Coordinates enable real weather near the event."
+          >
+            <Input
+              id="latitude"
+              name="latitude"
+              type="number"
+              step="any"
+              min={-90}
+              max={90}
+              defaultValue={values.latitude?.toString() ?? ""}
+              placeholder="39.7392"
+            />
+          </FieldShell>
+          <FieldShell label="Longitude" htmlFor="longitude" optional>
+            <Input
+              id="longitude"
+              name="longitude"
+              type="number"
+              step="any"
+              min={-180}
+              max={180}
+              defaultValue={values.longitude?.toString() ?? ""}
+              placeholder="-104.9903"
             />
           </FieldShell>
           <FieldShell label="Invitation accent" htmlFor="primaryColor">

@@ -40,6 +40,21 @@ export type PublicMealOption = {
   description: string | null;
 };
 
+export type PublicEventUpdate = {
+  id: string;
+  message: string;
+  isImportant: boolean;
+  postedAt: string;
+};
+
+export type PublicWeather = {
+  summary: string;
+  temperature: number;
+  precipitationProbability: number | null;
+  windSpeed: number | null;
+  forecastAt: string;
+};
+
 export type PublicEvent = {
   id: string;
   slug: string;
@@ -57,12 +72,17 @@ export type PublicEvent = {
   venueName: string | null;
   venueAddress: string | null;
   venueUrl: string | null;
+  dressCode: string | null;
+  whatToBring: string | null;
+  arrivalInstructions: string | null;
   primaryColor: string | null;
   rsvpDeadline: string | null;
   calendarUrl: string;
   status: "PUBLISHED" | "CLOSED";
   allowMaybe: boolean;
   partySizeLimit: number;
+  updates: PublicEventUpdate[];
+  weather: PublicWeather | null;
   questions: PublicQuestion[];
   mealOptions: PublicMealOption[];
 };
@@ -103,6 +123,7 @@ export type RsvpAccess = {
   partySizeLimit: number;
   canRespond: boolean;
   members: PublicHouseholdMember[];
+  currentResponse: RsvpResponseValue | null;
   initialRsvp: RsvpDraft | null;
 };
 

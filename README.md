@@ -121,6 +121,12 @@ Management-link rotation keeps the working predecessor valid until SMTP accepts 
 
 Invitation, confirmation, update, private management-link, and reminder messages each include responsive HTML and plain text. Never put guest tokens into logs, metadata, error-monitoring context, or third-party click rewriting.
 
+## Event weather
+
+The live event card requests an hourly forecast only when an event has latitude and longitude and is within ten days. Hosts can enter those coordinates with the venue details. Forecast failures never block an invitation, and weather is omitted once it is no longer useful.
+
+The default `WEATHER_FORECAST_URL` uses Open-Meteo and the guest card includes attribution. Review its current license and usage limits for your deployment. Commercial or higher-volume installations can set a licensed compatible endpoint and `WEATHER_API_KEY` in `.env`, then rebuild/restart the app.
+
 ## Persistent data
 
 Compose creates two named volumes:

@@ -102,6 +102,49 @@ type ParsedPayload = z.infer<typeof payloadSchema>;
 
 class PublicRsvpError extends Error {}
 
+function submittedAnswerFingerprint(
+  event: ActionEvent,
+  payload: ParsedPayload,
+  householdId: string,
+) {
+  return JSON.stringify(
+    payload.answers
+      .flatMap((answer) => {
+        const question = event.questions.find(
+          (candidate) => candidate.id === answer.questionId,
+        );
+        if (
+          !question ||
+          !isQuestionVisible(question, payload, answer.subjectKey) ||
+          !isAnswered(answer.value)
+        ) {
+          return [];
+        }
+        const value =
+          question.type === "SINGLE_SELECT"
+            ? [String(answer.value)]
+            : Array.isArray(answer.value)
+              ? [...answer.value].sort()
+              : answer.value;
+        return [
+          {
+            questionId: answer.questionId,
+            subjectKey:
+              answer.subjectKey === "household"
+                ? householdId
+                : answer.subjectKey,
+            value,
+          },
+        ];
+      })
+      .sort((left, right) =>
+        `${left.questionId}:${left.subjectKey}`.localeCompare(
+          `${right.questionId}:${right.subjectKey}`,
+        ),
+      ),
+  );
+}
+
 function actionError(message: string): RsvpActionState {
   return { status: "ERROR", message, manageUrl: null, submittedResponse: null };
 }
@@ -295,7 +338,11 @@ async function persistSubmission(
         guests: Array<{ id: string }>;
       };
       let invitation: { id: string };
-      let existingRsvp: { id: string; revision: number } | null;
+      let existingRsvp: {
+        id: string;
+        revision: number;
+        response: "YES" | "MAYBE" | "NO";
+      } | null;
       let primaryPublicGuestId: string | null = null;
 
       if (input.accessKind === "PUBLIC") {
@@ -450,6 +497,44 @@ async function persistSubmission(
       }
       validateQuestions(event, payload);
 
+      const previousAttendeeCount = existingRsvp
+        ? await tx.attendee.count({ where: { rsvpId: existingRsvp.id } })
+        : 0;
+      const previousAnswers = existingRsvp
+        ? await tx.rsvpAnswer.findMany({
+            where: { rsvpId: existingRsvp.id },
+            select: {
+              questionId: true,
+              attendeeId: true,
+              subjectKey: true,
+              textValue: true,
+              booleanValue: true,
+              options: { select: { optionId: true } },
+            },
+          })
+        : [];
+      const previousAnswerFingerprint = JSON.stringify(
+        previousAnswers
+          .map((answer) => ({
+            questionId: answer.questionId,
+            subjectKey: answer.attendeeId ?? answer.subjectKey,
+            value:
+              answer.options.length > 0
+                ? answer.options.map((option) => option.optionId).sort()
+                : (answer.booleanValue ?? answer.textValue ?? ""),
+          }))
+          .sort((left, right) =>
+            `${left.questionId}:${left.subjectKey}`.localeCompare(
+              `${right.questionId}:${right.subjectKey}`,
+            ),
+          ),
+      );
+      const nextAnswerFingerprint = submittedAnswerFingerprint(
+        event,
+        payload,
+        household.id,
+      );
+
       let rsvpId: string;
       let revision: number;
       const wasUpdate = Boolean(existingRsvp);
@@ -591,8 +676,42 @@ async function persistSubmission(
           rsvpId,
           type: wasUpdate ? "RSVP_UPDATED" : "RSVP_SUBMITTED",
           ipHash,
+          metadata: {
+            response: payload.response,
+            ...(existingRsvp
+              ? { previousResponse: existingRsvp.response }
+              : {}),
+          },
         },
       });
+      if (wasUpdate && attendeeCount !== previousAttendeeCount) {
+        await tx.analyticsEvent.create({
+          data: {
+            eventId: event.id,
+            householdId: household.id,
+            invitationId: invitation.id,
+            rsvpId,
+            type:
+              attendeeCount > previousAttendeeCount
+                ? "GUEST_ADDED"
+                : "GUEST_REMOVED",
+            metadata: {
+              count: Math.abs(attendeeCount - previousAttendeeCount),
+            },
+          },
+        });
+      }
+      if (wasUpdate && previousAnswerFingerprint !== nextAnswerFingerprint) {
+        await tx.analyticsEvent.create({
+          data: {
+            eventId: event.id,
+            householdId: household.id,
+            invitationId: invitation.id,
+            rsvpId,
+            type: "RSVP_ANSWERS_UPDATED",
+          },
+        });
+      }
 
       let manageToken =
         input.accessKind === "MANAGEMENT" ? input.accessToken : "";

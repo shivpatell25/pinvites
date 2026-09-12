@@ -6,6 +6,7 @@ import { authorizedPartySizeLimit } from "@/lib/party-size";
 import { createPublicGrant } from "@/lib/public-grants";
 import { toDraftAnswerValue } from "@/lib/rsvp-draft";
 import { hashToken, hasValidTokenShape } from "@/lib/security/tokens";
+import { getEventWeather } from "@/lib/weather";
 import type {
   AnswerDraft,
   PublicEvent,
@@ -16,6 +17,7 @@ import type {
 
 const publicEventInclude = {
   heroArtwork: true,
+  updates: { orderBy: { postedAt: "desc" }, take: 20 },
   mealOptions: {
     where: { isActive: true },
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
@@ -100,7 +102,10 @@ function mapQuestionKind(
   }
 }
 
-function mapEvent(event: PublicEventRecord): PublicEvent {
+function mapEvent(
+  event: PublicEventRecord,
+  weather: PublicEvent["weather"],
+): PublicEvent {
   const calendarBase = `/e/${encodeURIComponent(event.slug)}/calendar.ics`;
   return {
     id: event.id,
@@ -110,10 +115,7 @@ function mapEvent(event: PublicEventRecord): PublicEvent {
     subtitle: event.subtitle,
     hostName: event.hostName,
     description: event.description,
-    details:
-      [event.details, event.dressCode ? `Dress code: ${event.dressCode}` : null]
-        .filter(Boolean)
-        .join("\n\n") || null,
+    details: event.details,
     artworkUrl: artworkUrl(event),
     startsAt: event.startsAt.toISOString(),
     endsAt: event.endsAt?.toISOString() ?? null,
@@ -122,11 +124,21 @@ function mapEvent(event: PublicEventRecord): PublicEvent {
     venueName: event.venueName,
     venueAddress: event.venueAddress,
     venueUrl: event.venueUrl,
+    dressCode: event.dressCode,
+    whatToBring: event.whatToBring,
+    arrivalInstructions: event.arrivalInstructions,
     primaryColor: event.primaryColor,
     rsvpDeadline: event.rsvpDeadline?.toISOString() ?? null,
     status: acceptingResponses(event) ? "PUBLISHED" : "CLOSED",
     allowMaybe: event.allowMaybe,
     partySizeLimit: event.partySizeLimit,
+    updates: event.updates.map((update) => ({
+      id: update.id,
+      message: update.message,
+      isImportant: update.isImportant,
+      postedAt: update.postedAt.toISOString(),
+    })),
+    weather,
     calendarUrl: event.isPublic
       ? calendarBase
       : `${calendarBase}?grant=${encodeURIComponent(createPublicGrant("calendar", event.id))}`,
@@ -207,7 +219,7 @@ function tokenIsUsable(record: TokenRecord) {
 
 export async function getPublicEvent(
   slug: string,
-  options: { trackView?: boolean } = {},
+  options: { trackView?: boolean; includeWeather?: boolean } = {},
 ): Promise<{ event: PublicEvent; access: RsvpAccess } | null> {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return null;
   const event = await db.event.findUnique({
@@ -228,8 +240,10 @@ export async function getPublicEvent(
       })
       .catch(() => undefined);
   }
+  const weather =
+    options.includeWeather === false ? null : await getEventWeather(event);
   return {
-    event: mapEvent(event),
+    event: mapEvent(event, weather),
     access: {
       kind: "PUBLIC",
       token: null,
@@ -242,6 +256,7 @@ export async function getPublicEvent(
       }),
       canRespond: acceptingResponses(event),
       members: [],
+      currentResponse: null,
       initialRsvp: null,
     },
   };
@@ -304,8 +319,9 @@ export async function getPersonalInvitation(
   const canRespond =
     acceptingResponses(event) &&
     (kind === "MANAGEMENT" ? Boolean(existingRsvp) : !existingRsvp);
+  const weather = await getEventWeather(event);
   return {
-    event: mapEvent(event),
+    event: mapEvent(event, weather),
     access: {
       kind,
       token: rawToken,
@@ -321,6 +337,7 @@ export async function getPersonalInvitation(
         guestId: guest.id,
         fullName: guest.fullName,
       })),
+      currentResponse: existingRsvp?.response ?? null,
       initialRsvp:
         kind === "MANAGEMENT" && existingRsvp
           ? mapExistingRsvp(existingRsvp, household)

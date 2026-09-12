@@ -199,6 +199,33 @@ export async function updateRsvpAsAdminAction(
         message: parsed.data.message,
       },
     });
+    await transaction.analyticsEvent.create({
+      data: {
+        eventId,
+        householdId: rsvp.householdId,
+        invitationId: rsvp.invitationId,
+        rsvpId,
+        type: "RSVP_UPDATED",
+        metadata: {
+          actor: "HOST",
+          response: parsed.data.response,
+          previousResponse: rsvp.response,
+        },
+      },
+    });
+    const attendeeDelta = attendees.length - rsvp.attendees.length;
+    if (attendeeDelta !== 0) {
+      await transaction.analyticsEvent.create({
+        data: {
+          eventId,
+          householdId: rsvp.householdId,
+          invitationId: rsvp.invitationId,
+          rsvpId,
+          type: attendeeDelta > 0 ? "GUEST_ADDED" : "GUEST_REMOVED",
+          metadata: { actor: "HOST", count: Math.abs(attendeeDelta) },
+        },
+      });
+    }
     await transaction.auditLog.create({
       data: {
         adminId: admin.id,

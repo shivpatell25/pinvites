@@ -60,6 +60,10 @@ export const serverEnvironmentSchema = z
     ),
     TRUSTED_ORIGINS: optionalCsv,
     TRUST_PROXY_HEADERS: booleanFromEnvironment,
+    WEATHER_FORECAST_URL: z
+      .url()
+      .default("https://api.open-meteo.com/v1/forecast"),
+    WEATHER_API_KEY: z.string().trim().min(1).optional(),
   })
   .superRefine((environment, context) => {
     if (

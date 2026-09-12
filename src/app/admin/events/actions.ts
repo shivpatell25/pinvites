@@ -328,6 +328,8 @@ export async function duplicateEventAction(eventId: string): Promise<void> {
         latitude: source.latitude,
         longitude: source.longitude,
         dressCode: source.dressCode,
+        whatToBring: source.whatToBring,
+        arrivalInstructions: source.arrivalInstructions,
         primaryColor: source.primaryColor,
         createdById: admin.id,
         updatedById: admin.id,

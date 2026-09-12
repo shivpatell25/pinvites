@@ -31,7 +31,10 @@ export async function generateMetadata({
   params,
 }: PublicEventPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const result = await getPublicEvent(slug, { trackView: false });
+  const result = await getPublicEvent(slug, {
+    trackView: false,
+    includeWeather: false,
+  });
   if (!result) return { title: "Invitation" };
   return {
     title: result.event.title,
